@@ -1,0 +1,28 @@
+{
+  "name": "java-deserialization",
+  "version": "0.1.0",
+  "description": "Parse Java object serialization format using pure JavaScript",
+  "main": "src/java-deserialization.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gagern/nodeJavaDeserialization.git"
+  },
+  "keywords": [
+    "java",
+    "serialization",
+    "deserialization",
+    "format"
+  ],
+  "author": "Martin von Gagern",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/gagern/nodeJavaDeserialization/issues"
+  },
+  "homepage": "https://github.com/gagern/nodeJavaDeserialization#readme",
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  }
+}
