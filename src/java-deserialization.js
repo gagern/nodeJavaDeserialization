@@ -190,6 +190,42 @@ Parser.prototype.classdata = function(cls) {
     }
 }
 
+Parser.prototype.parseArray = function() {
+    var res = Object.defineProperties([], {
+        "class": {
+            configurable: true,
+            value: this.classDesc()
+        },
+        "extends": {
+            configurable: true,
+            value: {}
+        }
+    });
+    this.newHandle(res);
+    var len = this.readInt32();
+    res.length = len;
+    for (var i = 0; i < len; ++i)
+        res[i] = this.content();
+    return res;
+}
+
+Parser.prototype.parseEnum = function() {
+    var clazz = this.classDesc();
+    var constant = this.content();
+    var res = Object.defineProperties(new String(constant), {
+        "class": {
+            configurable: true,
+            value: clazz
+        },
+        "extends": {
+            configurable: true,
+            value: {}
+        }
+    });
+    this.newHandle(res);
+    return res;
+}
+
 Parser.prototype.parseBlockData = function() {
     var len = this.readUInt8();
     var res = this.buf.slice(this.pos, this.pos + len);
