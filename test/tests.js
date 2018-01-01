@@ -125,6 +125,22 @@ describe('Deserialization of', () => {
       assert.strictEqual(itm.class.name, '[I', "expected itm.class.name to be strictEqual to '[I'");
     }));
 
+  it('nested array', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABdXIAFFtbTGphdmEubGFuZy5TdHJpbmc7Mk0JrYQy5FcCAAB4cAAAAAJ1cgATW0xqYXZh' +
+    'LmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAAAAACdAABYXQAAWJ1cQB+AAUAAAABdAABY3Vx' +
+    'AH4AAAAAAAJxAH4AC3QAA0VuZA==',
+    function(itm) {
+      assert(Array.isArray(itm), "expected Array.isArray(itm)");
+      assert.strictEqual(itm.length, 2, "expected itm.length to be strictEqual to 2");
+      assert(Array.isArray(itm[0]), "expected Array.isArray(itm[0])");
+      assert.strictEqual(itm[0].length, 2, "expected itm[0].length to be strictEqual to 2");
+      assert.strictEqual(itm[1].length, 1, "expected itm[1].length to be strictEqual to 1");
+      assert.strictEqual(itm[0][0], 'a', "expected itm[0][0] to be strictEqual to 'a'");
+      assert.strictEqual(itm[0][1], 'b', "expected itm[0][1] to be strictEqual to 'b'");
+      assert.strictEqual(itm[1][0], 'c', "expected itm[1][0] to be strictEqual to 'c'");
+    }));
+
   it('enums', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
     'fgABfnIACFNvbWVFbnVtAAAAAAAAAAASAAB4cgAOamF2YS5sYW5nLkVudW0AAAAAAAAAABIA' +

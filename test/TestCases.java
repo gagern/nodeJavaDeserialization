@@ -117,6 +117,21 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("itm.class.name", "'[I'");
     }
 
+    @SerializationTestCase public void nestedArray() throws Exception {
+        writeObject(new String[][] {
+                new String[] { "a", "b" },
+                new String[] { "c" }
+            });
+        checkThat("Array.isArray(itm)");
+        checkStrictEqual("itm.length", "2");
+        checkThat("Array.isArray(itm[0])");
+        checkStrictEqual("itm[0].length", "2");
+        checkStrictEqual("itm[1].length", "1");
+        checkStrictEqual("itm[0][0]", "'a'");
+        checkStrictEqual("itm[0][1]", "'b'");
+        checkStrictEqual("itm[1][0]", "'c'");
+    }
+
     @SerializationTestCase public void enums() throws Exception {
         writeObject(SomeEnum.ONE);
         writeObject(SomeEnum.THREE);

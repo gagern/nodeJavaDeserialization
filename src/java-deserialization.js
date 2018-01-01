@@ -325,6 +325,10 @@ Parser.prototype.primL = function() {
     return this.content();
 }
 
+Parser.prototype["prim["] = function() {
+    return this.content();
+}
+
 function mapParser(cls, fields) {
     var data = fields["@"];
     var capacity = data[0].readInt32BE(0);
