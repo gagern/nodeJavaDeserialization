@@ -18,11 +18,12 @@ class GenerateTestCases {
              "    const res = javaDeserialization.parse(bytes);\n" +
              "    const begin = res[0];\n" +
              "    const end = res[res.length - 1];\n" +
-             "    assert(begin[0] === 'Begin');\n" +
-             "    assert(begin[1] === begin);\n" +
-             "    assert(end[0] === end);\n" +
-             "    assert(end[1] === 'End');\n" +
-             "    assert(res.length === checks.length + 2);\n" +
+             "    assert.strictEqual(begin[0], 'Begin');\n" +
+             "    assert.strictEqual(begin[1], begin);\n" +
+             "    assert.strictEqual(end[0], end);\n" +
+             "    assert.strictEqual(end[1], 'End');\n" +
+             "    assert.strictEqual(res.length, checks.length + 2,\n" +
+             "      'Number of serialized objects must match args list');\n" +
              "    return checks.apply(null, res.slice(1, -1));\n" +
              "  };\n" +
              "}\n" +
@@ -80,7 +81,9 @@ class GenerateTestCases {
     }
 
     protected void checkWith(String method, String actual, String expected) {
-        checkLine("assert." + method + "(" + actual + ", " + expected + ");");
+        checkLine("assert." + method + "(" + actual + ", " + expected + ", " +
+                  "\"expected " + actual + " to be " + method + " to " +
+                  expected + "\");");
     }
 
     protected void checkStrictEqual(String actual, String expected) {
