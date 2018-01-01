@@ -125,7 +125,7 @@ class GenerateTestCases {
             out.print("' +\n    '");
         }
         out.print(b64.substring(i));
-        out.print("', \n    function(");
+        out.print("',\n    function(");
         out.print(args);
         out.print(") {\n");
         checkBuf.writeTo(out);

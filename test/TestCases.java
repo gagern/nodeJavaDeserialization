@@ -3,7 +3,7 @@ import java.io.Serializable;
 enum SomeEnum { ONE, TWO, THREE }
 
 class PrimitiveFields implements Serializable {
-    private static final long serialVersionUID = 1234567L;
+    private static final long serialVersionUID = 0x123456789abcL;
     int i = -123;
     short s = -456;
     long l = -789;
@@ -11,6 +11,22 @@ class PrimitiveFields implements Serializable {
     double d = 12.34;
     float f = 76.5f;
     boolean bo = true;
+    char c = '\u1234';
+}
+
+class BaseClassWithField implements Serializable {
+    private static final long serialVersionUID = 0x1234L;
+    private int foo = 123;
+}
+
+class DerivedClassWithAnotherField extends BaseClassWithField {
+    private static final long serialVersionUID = 0x2345L;
+    private int bar = 234;
+}
+
+class DerivedClassWithSameField extends BaseClassWithField {
+    private static final long serialVersionUID = 0x3456L;
+    private int foo = 345;
 }
 
 class TestCases extends GenerateTestCases {
@@ -36,7 +52,59 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("itm.d", "12.34");
         checkStrictEqual("itm.f", "76.5");
         checkStrictEqual("itm.bo", "true");
-        checkStrictEqual("Object.keys(itm).length", "7");
+        checkStrictEqual("itm.c", "'\\u1234'");
+        checkStrictEqual("Object.keys(itm).length", "8");
+        checkStrictEqual("itm.class.serialVersionUID", "'0000123456789abc'");
+    }
+
+    @SerializationTestCase public void boxedPrimitives() throws Exception {
+        writeObject(new Integer(-123));
+        writeObject(new Short((short)-456));
+        writeObject(new Long(-789L));
+        writeObject(new Byte((byte)-21));
+        writeObject(new Double(12.34));
+        writeObject(new Float(76.5f));
+        writeObject(Boolean.TRUE);
+        writeObject(new Character('\u1234'));
+        args = "i, s, l, by, d, f, bo, c";
+        checkStrictEqual("i.value", "-123");
+        checkStrictEqual("s.value", "-456");
+        checkThat("l.value.equals(-789)");
+        checkStrictEqual("by.value", "-21");
+        checkStrictEqual("d.value", "12.34");
+        checkStrictEqual("f.value", "76.5");
+        checkStrictEqual("bo.value", "true");
+        checkStrictEqual("c.value", "'\\u1234'");
+        checkStrictEqual("i.class.name", "'java.lang.Integer'");
+        checkStrictEqual("s.class.name", "'java.lang.Short'");
+        checkStrictEqual("l.class.name", "'java.lang.Long'");
+        checkStrictEqual("by.class.name", "'java.lang.Byte'");
+        checkStrictEqual("d.class.name", "'java.lang.Double'");
+        checkStrictEqual("f.class.name", "'java.lang.Float'");
+        checkStrictEqual("bo.class.name", "'java.lang.Boolean'");
+        checkStrictEqual("c.class.name", "'java.lang.Character'");
+    }
+
+    @SerializationTestCase public void inheritedField() throws Exception {
+        writeObject(new DerivedClassWithAnotherField());
+        checkStrictEqual("itm.class.name", "'DerivedClassWithAnotherField'");
+        checkStrictEqual("itm.class.super.name", "'BaseClassWithField'");
+        checkStrictEqual("itm.class.super.super", "null");
+        checkStrictEqual("itm.extends.DerivedClassWithAnotherField.bar", "234");
+        checkStrictEqual("itm.extends.DerivedClassWithAnotherField.foo", "undefined");
+        checkStrictEqual("itm.extends.BaseClassWithField.foo", "123");
+        checkStrictEqual("itm.bar", "234");
+        checkStrictEqual("itm.foo", "123");
+    }
+
+    @SerializationTestCase public void duplicateField() throws Exception {
+        writeObject(new DerivedClassWithSameField());
+        checkStrictEqual("itm.class.name", "'DerivedClassWithSameField'");
+        checkStrictEqual("itm.class.super.name", "'BaseClassWithField'");
+        checkStrictEqual("itm.class.super.super", "null");
+        checkStrictEqual("itm.extends.DerivedClassWithSameField.foo", "345");
+        checkStrictEqual("itm.extends.BaseClassWithField.foo", "123");
+        checkStrictEqual("itm.foo", "345");
     }
 
     @SerializationTestCase public void enums() throws Exception {

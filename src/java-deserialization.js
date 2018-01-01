@@ -164,9 +164,9 @@ Parser.prototype.parseObject = function() {
 }
 
 Parser.prototype.recursiveClassData = function(cls, obj) {
-    var fields = obj.extends[cls.name] = this.classdata(cls, obj);
     if (cls.super)
         this.recursiveClassData(cls.super, obj);
+    var fields = obj.extends[cls.name] = this.classdata(cls, obj);
     for (var name in fields)
         obj[name] = fields[name];
 }
