@@ -24,6 +24,8 @@
 
 "use strict";
 
+var Long = require("long");
+
 var names = [
     "Null", "Reference", "ClassDesc", "Object", "String", "Array", "Class", "BlockData", "EndBlockData",
     "Reset", "BlockDataLong", "Exception", "LongString", "ProxyClassDesc", "Enum"
@@ -299,7 +301,9 @@ Parser.prototype.primI = function() {
 }
 
 Parser.prototype.primJ = function() {
-    return this.readHex(8);
+    var high = this.readUInt32();
+    var low = this.readUInt32();
+    return Long.fromBits(low, high);
 }
 
 Parser.prototype.primS = function() {

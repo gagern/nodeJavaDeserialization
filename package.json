@@ -25,5 +25,8 @@
   "homepage": "https://github.com/gagern/nodeJavaDeserialization#readme",
   "devDependencies": {
     "mocha": "^4.1.0"
+  },
+  "dependencies": {
+    "long": "^3.2.0"
   }
 }

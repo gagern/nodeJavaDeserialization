@@ -40,7 +40,9 @@ describe('Deserialization of', () => {
     function(itm) {
       assert.strictEqual(itm.i, -123);
       assert.strictEqual(itm.s, -456);
-      assert.strictEqual(itm.l, 'fffffffffffffceb');
+      assert.strictEqual(String(itm.l), '-789');
+      assert.strictEqual(itm.l.toNumber(), -789);
+      assert(itm.l.equals(-789));
       assert.strictEqual(itm.by, -21);
       assert.strictEqual(itm.d, 12.34);
       assert.strictEqual(itm.f, 76.5);

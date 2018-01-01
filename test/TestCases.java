@@ -29,7 +29,9 @@ class TestCases extends GenerateTestCases {
         writeObject(new PrimitiveFields());
         checkStrictEqual("itm.i", "-123");
         checkStrictEqual("itm.s", "-456");
-        checkStrictEqual("itm.l", "'fffffffffffffceb'");
+        checkStrictEqual("String(itm.l)", "'-789'");
+        checkStrictEqual("itm.l.toNumber()", "-789");
+        checkThat("itm.l.equals(-789)");
         checkStrictEqual("itm.by", "-21");
         checkStrictEqual("itm.d", "12.34");
         checkStrictEqual("itm.f", "76.5");
