@@ -37,8 +37,8 @@ class TestCases extends GenerateTestCases {
 
     @SerializationTestCase public void string() throws Exception {
         writeObject("sometext");
-        checkThat("typeof itm === 'string'");
-        checkThat("itm === 'sometext'");
+        checkStrictEqual("typeof itm", "'string'");
+        checkStrictEqual("itm", "'sometext'");
     }
 
     @SerializationTestCase public void primitiveFields() throws Exception {
@@ -105,6 +105,16 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("itm.extends.DerivedClassWithSameField.foo", "345");
         checkStrictEqual("itm.extends.BaseClassWithField.foo", "123");
         checkStrictEqual("itm.foo", "345");
+    }
+
+    @SerializationTestCase public void primitiveArray() throws Exception {
+        writeObject(new int[] { 12, 34, 56 });
+        checkThat("Array.isArray(itm)");
+        checkStrictEqual("itm.length", "3");
+        checkStrictEqual("itm[0]", "12");
+        checkStrictEqual("itm[1]", "34");
+        checkStrictEqual("itm[2]", "56");
+        checkStrictEqual("itm.class.name", "'[I'");
     }
 
     @SerializationTestCase public void enums() throws Exception {

@@ -29,8 +29,8 @@ describe('Deserialization of', () => {
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
     'fgABdAAIc29tZXRleHR1cQB+AAAAAAACcQB+AAR0AANFbmQ=',
     function(itm) {
-      assert(typeof itm === 'string');
-      assert(itm === 'sometext');
+      assert.strictEqual(typeof itm, 'string', "expected typeof itm to be strictEqual to 'string'");
+      assert.strictEqual(itm, 'sometext', "expected itm to be strictEqual to 'sometext'");
     }));
 
   it('primitive fields', testCase(
@@ -43,7 +43,7 @@ describe('Deserialization of', () => {
       assert.strictEqual(itm.s, -456, "expected itm.s to be strictEqual to -456");
       assert.strictEqual(String(itm.l), '-789', "expected String(itm.l) to be strictEqual to '-789'");
       assert.strictEqual(itm.l.toNumber(), -789, "expected itm.l.toNumber() to be strictEqual to -789");
-      assert(itm.l.equals(-789));
+      assert(itm.l.equals(-789), "expected itm.l.equals(-789)");
       assert.strictEqual(itm.by, -21, "expected itm.by to be strictEqual to -21");
       assert.strictEqual(itm.d, 12.34, "expected itm.d to be strictEqual to 12.34");
       assert.strictEqual(itm.f, 76.5, "expected itm.f to be strictEqual to 76.5");
@@ -66,7 +66,7 @@ describe('Deserialization of', () => {
     function(i, s, l, by, d, f, bo, c) {
       assert.strictEqual(i.value, -123, "expected i.value to be strictEqual to -123");
       assert.strictEqual(s.value, -456, "expected s.value to be strictEqual to -456");
-      assert(l.value.equals(-789));
+      assert(l.value.equals(-789), "expected l.value.equals(-789)");
       assert.strictEqual(by.value, -21, "expected by.value to be strictEqual to -21");
       assert.strictEqual(d.value, 12.34, "expected d.value to be strictEqual to 12.34");
       assert.strictEqual(f.value, 76.5, "expected f.value to be strictEqual to 76.5");
@@ -112,17 +112,30 @@ describe('Deserialization of', () => {
       assert.strictEqual(itm.foo, 345, "expected itm.foo to be strictEqual to 345");
     }));
 
+  it('primitive array', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABdXIAAltJTbpgJnbqsqUCAAB4cAAAAAMAAAAMAAAAIgAAADh1cQB+AAAAAAACcQB+AAV0' +
+    'AANFbmQ=',
+    function(itm) {
+      assert(Array.isArray(itm), "expected Array.isArray(itm)");
+      assert.strictEqual(itm.length, 3, "expected itm.length to be strictEqual to 3");
+      assert.strictEqual(itm[0], 12, "expected itm[0] to be strictEqual to 12");
+      assert.strictEqual(itm[1], 34, "expected itm[1] to be strictEqual to 34");
+      assert.strictEqual(itm[2], 56, "expected itm[2] to be strictEqual to 56");
+      assert.strictEqual(itm.class.name, '[I', "expected itm.class.name to be strictEqual to '[I'");
+    }));
+
   it('enums', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
     'fgABfnIACFNvbWVFbnVtAAAAAAAAAAASAAB4cgAOamF2YS5sYW5nLkVudW0AAAAAAAAAABIA' +
     'AHhwdAADT05FfnEAfgADdAAFVEhSRUV1cQB+AAAAAAACcQB+AAl0AANFbmQ=',
     function(one, three) {
       assert.strictEqual(typeof one, 'object', "expected typeof one to be strictEqual to 'object'");
-      assert(one instanceof String);
+      assert(one instanceof String, "expected one instanceof String");
       assert.equal(one, 'ONE', "expected one to be equal to 'ONE'");
       assert.notStrictEqual(one, 'ONE', "expected one to be notStrictEqual to 'ONE'");
       assert.strictEqual(one.class.name, 'SomeEnum', "expected one.class.name to be strictEqual to 'SomeEnum'");
-      assert(one.class.isEnum);
+      assert(one.class.isEnum, "expected one.class.isEnum");
       assert.strictEqual(one.class.super.name, 'java.lang.Enum', "expected one.class.super.name to be strictEqual to 'java.lang.Enum'");
       assert.strictEqual(one.class.super.super, null, "expected one.class.super.super to be strictEqual to null");
       assert.equal(three, 'THREE', "expected three to be equal to 'THREE'");

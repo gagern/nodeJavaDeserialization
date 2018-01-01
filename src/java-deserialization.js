@@ -193,10 +193,11 @@ Parser.prototype.classdata = function(cls) {
 }
 
 Parser.prototype.parseArray = function() {
+    var classDesc = this.classDesc();
     var res = Object.defineProperties([], {
         "class": {
             configurable: true,
-            value: this.classDesc()
+            value: classDesc
         },
         "extends": {
             configurable: true,
@@ -205,9 +206,10 @@ Parser.prototype.parseArray = function() {
     });
     this.newHandle(res);
     var len = this.readInt32();
+    var handler = this.primHandler(classDesc.name.charAt(1));
     res.length = len;
     for (var i = 0; i < len; ++i)
-        res[i] = this.content();
+        res[i] = handler.call(this);
     return res;
 }
 
@@ -250,15 +252,20 @@ Parser.prototype.parseStringLong = function() {
     return this.newHandle(this.utfLong());
 }
 
+Parser.prototype.primHandler = function(type) {
+    var handler = this["prim" + type];
+    if (!handler)
+        throw Error("Don't know how to read field of type '" + type + "'");
+    return handler;
+}
+
 Parser.prototype.values = function(cls) {
     var vals = {};
     var fields = cls.fields;
     for (var i = 0; i < fields.length; ++i) {
         var field = fields[i];
-        var handler = this["prim" + field.type];
-        if (!handler)
-            throw Error("Don't know how to read field of type '" + field.type + "'");
-        vals[field.name] = handler.call(this, field);
+        var handler = this.primHandler(field.type);
+        vals[field.name] = handler.call(this);
     }
     return vals;
 }

@@ -77,7 +77,7 @@ class GenerateTestCases {
     }
 
     protected void checkThat(String chk) {
-        checkLine("assert(" + chk + ");");
+        checkLine("assert(" + chk + ", \"expected " + chk + "\");");
     }
 
     protected void checkWith(String method, String actual, String expected) {
