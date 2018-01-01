@@ -4,7 +4,8 @@
   "description": "Parse Java object serialization format using pure JavaScript",
   "main": "src/java-deserialization.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test/*.js",
+    "gentest": "cd test && javac *.java && java GenerateTestCases > tests.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,6 @@
   },
   "homepage": "https://github.com/gagern/nodeJavaDeserialization#readme",
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "mocha": "^4.1.0"
   }
 }
