@@ -17,7 +17,7 @@
     "format"
   ],
   "author": "Martin von Gagern",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/gagern/nodeJavaDeserialization/issues"
   },
