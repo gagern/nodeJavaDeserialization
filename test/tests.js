@@ -141,6 +141,21 @@ describe('Deserialization of', () => {
       assert.strictEqual(itm[1][0], 'c', "expected itm[1][0] to be strictEqual to 'c'");
     }));
 
+  it('array fields', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAC0FycmF5RmllbGRzAAAAAAAAAAECAANbAAJpYXQAAltJWwADaWFhdAADW1tJWwAC' +
+    'c2F0ABNbTGphdmEvbGFuZy9TdHJpbmc7eHB1cgACW0lNumAmduqypQIAAHhwAAAAAwAAAAwA' +
+    'AAAiAAAAOHVyAANbW0kX9+RPGY+JPAIAAHhwAAAAAnVxAH4ACAAAAAIAAAALAAAADHVxAH4A' +
+    'CAAAAAMAAAAVAAAAFgAAABd1cgATW0xqYXZhLmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAA' +
+    'AAACdAADZm9vdAADYmFydXEAfgAAAAAAAnEAfgASdAADRW5k',
+    function(itm) {
+      assert(Array.isArray(itm.ia), "expected Array.isArray(itm.ia)");
+      assert(Array.isArray(itm.iaa), "expected Array.isArray(itm.iaa)");
+      assert(Array.isArray(itm.sa), "expected Array.isArray(itm.sa)");
+      assert.strictEqual(itm.iaa[1][2], 23, "expected itm.iaa[1][2] to be strictEqual to 23");
+      assert.strictEqual(itm.sa[1], 'bar', "expected itm.sa[1] to be strictEqual to 'bar'");
+    }));
+
   it('enums', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
     'fgABfnIACFNvbWVFbnVtAAAAAAAAAAASAAB4cgAOamF2YS5sYW5nLkVudW0AAAAAAAAAABIA' +

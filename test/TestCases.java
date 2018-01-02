@@ -29,6 +29,13 @@ class DerivedClassWithSameField extends BaseClassWithField {
     private int foo = 345;
 }
 
+class ArrayFields implements Serializable {
+    private static final long serialVersionUID = 0x1;
+    private int[] ia = { 12, 34, 56 };
+    private int[][] iaa = { { 11, 12 }, { 21, 22, 23 } };
+    private String[] sa = { "foo", "bar" };
+}
+
 class TestCases extends GenerateTestCases {
 
     @SerializationTestCase public void canariesOnly() throws Exception {
@@ -130,6 +137,15 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("itm[0][0]", "'a'");
         checkStrictEqual("itm[0][1]", "'b'");
         checkStrictEqual("itm[1][0]", "'c'");
+    }
+
+    @SerializationTestCase public void arrayFields() throws Exception {
+        writeObject(new ArrayFields());
+        checkThat("Array.isArray(itm.ia)");
+        checkThat("Array.isArray(itm.iaa)");
+        checkThat("Array.isArray(itm.sa)");
+        checkStrictEqual("itm.iaa[1][2]", "23");
+        checkStrictEqual("itm.sa[1]", "'bar'");
     }
 
     @SerializationTestCase public void enums() throws Exception {
