@@ -1,4 +1,4 @@
-import java.io.Serializable;
+import java.io.*;
 
 enum SomeEnum { ONE, TWO, THREE }
 
@@ -34,6 +34,28 @@ class ArrayFields implements Serializable {
     private int[] ia = { 12, 34, 56 };
     private int[][] iaa = { { 11, 12 }, { 21, 22, 23 } };
     private String[] sa = { "foo", "bar" };
+}
+
+class CustomFormat implements Serializable {
+    private static final long serialVersionUID = 0x1;
+
+    private int foo = 12345;
+
+    private void writeObject(ObjectOutputStream out)
+        throws IOException
+    {
+        out.defaultWriteObject();
+        // These numbers should result in "test" visible in the base64 output ;)
+        byte[] data = { -75, -21, 45, 0, -75, -21, 45, 0, -75, -21, 45 };
+        out.write(data);
+        out.writeObject("and more");
+    }
+
+    private void readObject(ObjectInputStream in)
+        throws IOException, ClassNotFoundException { }
+
+    private void readObjectNoData()
+        throws ObjectStreamException { }
 }
 
 class TestCases extends GenerateTestCases {
@@ -161,6 +183,17 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("one.class.super.name", "'java.lang.Enum'");
         checkStrictEqual("one.class.super.super", "null");
         checkEqual("three", "'THREE'");
+    }
+
+    @SerializationTestCase public void customFormat() throws Exception {
+        writeObject(new CustomFormat());
+        checkThat("Array.isArray(itm['@'])");
+        checkStrictEqual("itm['@'].length", "2");
+        checkThat("Buffer.isBuffer(itm['@'][0])");
+        checkStrictEqual("itm['@'][0].toString('hex')",
+                         "'b5eb2d00b5eb2d00b5eb2d'");
+        checkStrictEqual("itm['@'][1]", "'and more'");
+        checkStrictEqual("itm.foo", "12345");
     }
 
 }

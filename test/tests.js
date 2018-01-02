@@ -172,4 +172,17 @@ describe('Deserialization of', () => {
       assert.equal(three, 'THREE', "expected three to be equal to 'THREE'");
     }));
 
+  it('custom format', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IADEN1c3RvbUZvcm1hdAAAAAAAAAABAwABSQADZm9veHAAADA5dwu16y0AtestALXr' +
+    'LXQACGFuZCBtb3JleHVxAH4AAAAAAAJxAH4ABnQAA0VuZA==',
+    function(itm) {
+      assert(Array.isArray(itm['@']), "expected Array.isArray(itm['@'])");
+      assert.strictEqual(itm['@'].length, 2, "expected itm['@'].length to be strictEqual to 2");
+      assert(Buffer.isBuffer(itm['@'][0]), "expected Buffer.isBuffer(itm['@'][0])");
+      assert.strictEqual(itm['@'][0].toString('hex'), 'b5eb2d00b5eb2d00b5eb2d', "expected itm['@'][0].toString('hex') to be strictEqual to 'b5eb2d00b5eb2d00b5eb2d'");
+      assert.strictEqual(itm['@'][1], 'and more', "expected itm['@'][1] to be strictEqual to 'and more'");
+      assert.strictEqual(itm.foo, 12345, "expected itm.foo to be strictEqual to 12345");
+    }));
+
 });
