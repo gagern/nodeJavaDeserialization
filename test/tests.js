@@ -185,4 +185,53 @@ describe('Deserialization of', () => {
       assert.strictEqual(itm.foo, 12345, "expected itm.foo to be strictly equal to 12345");
     }));
 
+  it('HashMap<String, …>', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhy' +
+    'ZXNob2xkeHA/QAAAAAAADHcIAAAAEAAAAAJ0AANiYXJ0AANiYXp0AANmb29zcgARamF2YS5s' +
+    'YW5nLkludGVnZXIS4qCk94GHOAIAAUkABXZhbHVleHIAEGphdmEubGFuZy5OdW1iZXKGrJUd' +
+    'C5TgiwIAAHhwAAAAe3h1cQB+AAAAAAACcQB+AAt0AANFbmQ=',
+    function(itm) {
+      assert.strictEqual(typeof itm.map, 'object', "expected typeof itm.map to be strictly equal to 'object'");
+      assert.strictEqual(typeof itm['@'], 'undefined', "expected typeof itm['@'] to be strictly equal to 'undefined'");
+      assert.strictEqual(itm.map.bar, 'baz', "expected itm.map.bar to be strictly equal to 'baz'");
+      assert.strictEqual(itm.map.foo.value, 123, "expected itm.map.foo.value to be strictly equal to 123");
+      assert.strictEqual(Object.keys(itm.map).length, 2, "expected Object.keys(itm.map).length to be strictly equal to 2");
+    }));
+
+  it('HashMap<not String, …>', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhy' +
+    'ZXNob2xkeHA/QAAAAAAADHcIAAAAEAAAAAJ0AANiYXp0AANiYXJzcgARamF2YS5sYW5nLklu' +
+    'dGVnZXIS4qCk94GHOAIAAUkABXZhbHVleHIAEGphdmEubGFuZy5OdW1iZXKGrJUdC5TgiwIA' +
+    'AHhwAAAAe3QAA2Zvb3h1cQB+AAAAAAACcQB+AAt0AANFbmQ=',
+    function(itm) {
+      assert.strictEqual(typeof itm.map, 'undefined', "expected typeof itm.map to be strictly equal to 'undefined'");
+      assert.strictEqual(typeof itm['@'], 'object', "expected typeof itm['@'] to be strictly equal to 'object'");
+      assert(Array.isArray(itm['@']), "expected Array.isArray(itm['@'])");
+    }));
+
+  it('empty HashMap', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhy' +
+    'ZXNob2xkeHA/QAAAAAAAAHcIAAAAEAAAAAB4dXEAfgAAAAAAAnEAfgAFdAADRW5k',
+    function(itm) {
+      assert.strictEqual(typeof itm.map, 'object', "expected typeof itm.map to be strictly equal to 'object'");
+      assert.strictEqual(Object.keys(itm.map).length, 0, "expected Object.keys(itm.map).length to be strictly equal to 0");
+    }));
+
+  it('Hashtable<String, …>', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAE2phdmEudXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0' +
+    'aHJlc2hvbGR4cD9AAAAAAAAIdwgAAAALAAAAAnQAA2JhcnQAA2JhenQAA2Zvb3NyABFqYXZh' +
+    'LmxhbmcuSW50ZWdlchLioKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoas' +
+    'lR0LlOCLAgAAeHAAAAB7eHVxAH4AAAAAAAJxAH4AC3QAA0VuZA==',
+    function(itm) {
+      assert.strictEqual(typeof itm.map, 'object', "expected typeof itm.map to be strictly equal to 'object'");
+      assert.strictEqual(typeof itm['@'], 'undefined', "expected typeof itm['@'] to be strictly equal to 'undefined'");
+      assert.strictEqual(itm.map.bar, 'baz', "expected itm.map.bar to be strictly equal to 'baz'");
+      assert.strictEqual(itm.map.foo.value, 123, "expected itm.map.foo.value to be strictly equal to 123");
+      assert.strictEqual(Object.keys(itm.map).length, 2, "expected Object.keys(itm.map).length to be strictly equal to 2");
+    }));
+
 });

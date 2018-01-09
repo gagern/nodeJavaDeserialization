@@ -1,4 +1,5 @@
-import java.io.*;
+import java.io.Serializable;
+import java.util.HashMap;
 
 enum SomeEnum { ONE, TWO, THREE }
 
@@ -41,8 +42,8 @@ class CustomFormat implements Serializable {
 
     private int foo = 12345;
 
-    private void writeObject(ObjectOutputStream out)
-        throws IOException
+    private void writeObject(java.io.ObjectOutputStream out)
+        throws java.io.IOException
     {
         out.defaultWriteObject();
         // These numbers should result in "test" visible in the base64 output ;)
@@ -51,11 +52,11 @@ class CustomFormat implements Serializable {
         out.writeObject("and more");
     }
 
-    private void readObject(ObjectInputStream in)
-        throws IOException, ClassNotFoundException { }
+    private void readObject(java.io.ObjectInputStream in)
+        throws java.io.IOException, ClassNotFoundException { }
 
     private void readObjectNoData()
-        throws ObjectStreamException { }
+        throws java.io.ObjectStreamException { }
 }
 
 class TestCases extends GenerateTestCases {
@@ -195,6 +196,50 @@ class TestCases extends GenerateTestCases {
                          "'b5eb2d00b5eb2d00b5eb2d'");
         checkStrictEqual("itm['@'][1]", "'and more'");
         checkStrictEqual("itm.foo", "12345");
+    }
+
+    @SerializationTestCase(description="HashMap<String, …>")
+    public void hashMapStrings() throws Exception {
+        HashMap<String, Object> m = new HashMap<>();
+        m.put("foo", 123);
+        m.put("bar", "baz");
+        writeObject(m);
+        checkStrictEqual("typeof itm.map", "'object'");
+        checkStrictEqual("typeof itm['@']", "'undefined'");
+        checkStrictEqual("itm.map.bar", "'baz'");
+        checkStrictEqual("itm.map.foo.value", "123");
+        checkStrictEqual("Object.keys(itm.map).length", "2");
+    }
+
+    @SerializationTestCase(description="HashMap<not String, …>")
+    public void hashMapMixed() throws Exception {
+        HashMap<Object, String> m = new HashMap<>();
+        m.put(123, "foo");
+        m.put("baz", "bar");
+        writeObject(m);
+        checkStrictEqual("typeof itm.map", "'undefined'");
+        checkStrictEqual("typeof itm['@']", "'object'");
+        checkThat("Array.isArray(itm['@'])");
+    }
+
+    @SerializationTestCase(description="empty HashMap")
+    public void emptyHashMap() throws Exception {
+        writeObject(new HashMap<Object, Integer>());
+        checkStrictEqual("typeof itm.map", "'object'");
+        checkStrictEqual("Object.keys(itm.map).length", "0");
+    }
+
+    @SerializationTestCase(description="Hashtable<String, …>")
+    public void hashtableStrings() throws Exception {
+        java.util.Hashtable<String, Object> m = new java.util.Hashtable<>();
+        m.put("foo", 123);
+        m.put("bar", "baz");
+        writeObject(m);
+        checkStrictEqual("typeof itm.map", "'object'");
+        checkStrictEqual("typeof itm['@']", "'undefined'");
+        checkStrictEqual("itm.map.bar", "'baz'");
+        checkStrictEqual("itm.map.foo.value", "123");
+        checkStrictEqual("Object.keys(itm.map).length", "2");
     }
 
 }
