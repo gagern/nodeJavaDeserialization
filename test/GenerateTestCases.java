@@ -33,6 +33,15 @@ class GenerateTestCases {
         System.out.print("});\n");
     }
 
+    private static String uncamelWords(String camelString) {
+        StringBuilder buf = new StringBuilder(camelString);
+        for (int i = buf.length() - 1; i > 0; --i) {
+            if (Character.isUpperCase(buf.charAt(i)))
+                buf.insert(i, ' ');
+        }
+        return buf.toString().toLowerCase();
+    }
+
     private static void runTests(Class<? extends GenerateTestCases> cases)
         throws Exception
     {
@@ -47,7 +56,12 @@ class GenerateTestCases {
                     desc.insert(i, ' ');
             }
             GenerateTestCases instance = cases.newInstance();
-            instance.description = desc.toString().toLowerCase();
+            String description = a.description();
+            if (description.length() == 0) {
+                description = m.getName();
+                description = uncamelWords(description);
+            }
+            instance.description = description;
             instance.prepare();
             m.invoke(instance);
             instance.finish();
@@ -81,8 +95,9 @@ class GenerateTestCases {
     }
 
     protected void checkWith(String method, String actual, String expected) {
+        String op = uncamelWords(method).replace("strict ", "strictly ");
         checkLine("assert." + method + "(" + actual + ", " + expected + ", " +
-                  "\"expected " + actual + " to be " + method + " to " +
+                  "\"expected " + actual + " to be " + op + " to " +
                   expected + "\");");
     }
 

@@ -170,7 +170,8 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("itm.sa[1]", "'bar'");
     }
 
-    @SerializationTestCase public void enums() throws Exception {
+    @SerializationTestCase(description="enum")
+    public void enums() throws Exception {
         writeObject(SomeEnum.ONE);
         writeObject(SomeEnum.THREE);
         args = "one, three";
