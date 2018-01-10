@@ -25,7 +25,6 @@ var Parser = require("./parser.js");
 
 function listParser(cls, fields, data) {
     // var size_or_capacity = data[0].readInt32BE(0);
-    delete fields["@"];
     fields.list = data.slice(1);
     return fields;
 }
@@ -42,7 +41,6 @@ function mapParser(cls, fields, data) {
         }
         map[key] = value;
     }
-    delete fields["@"];
     fields.map = map;
     return fields;
 }
@@ -55,7 +53,6 @@ function enumMapParser(cls, fields, data) {
         var value = data[2*i + 2];
         map[key] = value;
     }
-    delete fields["@"];
     fields.map = map;
     return fields;
 }

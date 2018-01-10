@@ -205,7 +205,7 @@ class TestCases extends GenerateTestCases {
         m.put("bar", "baz");
         writeObject(m);
         checkStrictEqual("typeof itm.map", "'object'");
-        checkStrictEqual("typeof itm['@']", "'undefined'");
+        checkStrictEqual("typeof itm['@']", "'object'");
         checkStrictEqual("itm.map.bar", "'baz'");
         checkStrictEqual("itm.map.foo.value", "123");
         checkStrictEqual("Object.keys(itm.map).length", "2");
@@ -236,7 +236,7 @@ class TestCases extends GenerateTestCases {
         m.put("bar", "baz");
         writeObject(m);
         checkStrictEqual("typeof itm.map", "'object'");
-        checkStrictEqual("typeof itm['@']", "'undefined'");
+        checkStrictEqual("typeof itm['@']", "'object'");
         checkStrictEqual("itm.map.bar", "'baz'");
         checkStrictEqual("itm.map.foo.value", "123");
         checkStrictEqual("Object.keys(itm.map).length", "2");
@@ -250,7 +250,7 @@ class TestCases extends GenerateTestCases {
         m.put(SomeEnum.THREE, "baz");
         writeObject(m);
         checkStrictEqual("typeof itm.map", "'object'");
-        checkStrictEqual("typeof itm['@']", "'undefined'");
+        checkStrictEqual("typeof itm['@']", "'object'");
         checkStrictEqual("itm.map.THREE", "'baz'");
         checkStrictEqual("itm.map.ONE.value", "123");
         checkStrictEqual("Object.keys(itm.map).length", "2");

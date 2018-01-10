@@ -193,7 +193,7 @@ describe('Deserialization of', () => {
     'C5TgiwIAAHhwAAAAe3h1cQB+AAAAAAACcQB+AAt0AANFbmQ=',
     function(itm) {
       assert.strictEqual(typeof itm.map, 'object', "expected typeof itm.map to be strictly equal to 'object'");
-      assert.strictEqual(typeof itm['@'], 'undefined', "expected typeof itm['@'] to be strictly equal to 'undefined'");
+      assert.strictEqual(typeof itm['@'], 'object', "expected typeof itm['@'] to be strictly equal to 'object'");
       assert.strictEqual(itm.map.bar, 'baz', "expected itm.map.bar to be strictly equal to 'baz'");
       assert.strictEqual(itm.map.foo.value, 123, "expected itm.map.foo.value to be strictly equal to 123");
       assert.strictEqual(Object.keys(itm.map).length, 2, "expected Object.keys(itm.map).length to be strictly equal to 2");
@@ -228,7 +228,7 @@ describe('Deserialization of', () => {
     'lR0LlOCLAgAAeHAAAAB7eHVxAH4AAAAAAAJxAH4AC3QAA0VuZA==',
     function(itm) {
       assert.strictEqual(typeof itm.map, 'object', "expected typeof itm.map to be strictly equal to 'object'");
-      assert.strictEqual(typeof itm['@'], 'undefined', "expected typeof itm['@'] to be strictly equal to 'undefined'");
+      assert.strictEqual(typeof itm['@'], 'object', "expected typeof itm['@'] to be strictly equal to 'object'");
       assert.strictEqual(itm.map.bar, 'baz', "expected itm.map.bar to be strictly equal to 'baz'");
       assert.strictEqual(itm.map.foo.value, 123, "expected itm.map.foo.value to be strictly equal to 123");
       assert.strictEqual(Object.keys(itm.map).length, 2, "expected Object.keys(itm.map).length to be strictly equal to 2");
@@ -243,7 +243,7 @@ describe('Deserialization of', () => {
     'fnEAfgAGdAAFVEhSRUV0AANiYXp4dXEAfgAAAAAAAnEAfgARdAADRW5k',
     function(itm) {
       assert.strictEqual(typeof itm.map, 'object', "expected typeof itm.map to be strictly equal to 'object'");
-      assert.strictEqual(typeof itm['@'], 'undefined', "expected typeof itm['@'] to be strictly equal to 'undefined'");
+      assert.strictEqual(typeof itm['@'], 'object', "expected typeof itm['@'] to be strictly equal to 'object'");
       assert.strictEqual(itm.map.THREE, 'baz', "expected itm.map.THREE to be strictly equal to 'baz'");
       assert.strictEqual(itm.map.ONE.value, 123, "expected itm.map.ONE.value to be strictly equal to 123");
       assert.strictEqual(Object.keys(itm.map).length, 2, "expected Object.keys(itm.map).length to be strictly equal to 2");
