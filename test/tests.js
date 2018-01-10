@@ -234,4 +234,56 @@ describe('Deserialization of', () => {
       assert.strictEqual(Object.keys(itm.map).length, 2, "expected Object.keys(itm.map).length to be strictly equal to 2");
     }));
 
+  it('EnumMap', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAEWphdmEudXRpbC5FbnVtTWFwBl19976QfKEDAAFMAAdrZXlUeXBldAARTGphdmEv' +
+    'bGFuZy9DbGFzczt4cHZyAAhTb21lRW51bQAAAAAAAAAAEgAAeHIADmphdmEubGFuZy5FbnVt' +
+    'AAAAAAAAAAASAAB4cHcEAAAAAn5xAH4ABnQAA09ORXNyABFqYXZhLmxhbmcuSW50ZWdlchLi' +
+    'oKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoaslR0LlOCLAgAAeHAAAAB7' +
+    'fnEAfgAGdAAFVEhSRUV0AANiYXp4dXEAfgAAAAAAAnEAfgARdAADRW5k',
+    function(itm) {
+      assert.strictEqual(typeof itm.map, 'object', "expected typeof itm.map to be strictly equal to 'object'");
+      assert.strictEqual(typeof itm['@'], 'undefined', "expected typeof itm['@'] to be strictly equal to 'undefined'");
+      assert.strictEqual(itm.map.THREE, 'baz', "expected itm.map.THREE to be strictly equal to 'baz'");
+      assert.strictEqual(itm.map.ONE.value, 123, "expected itm.map.ONE.value to be strictly equal to 123");
+      assert.strictEqual(Object.keys(itm.map).length, 2, "expected Object.keys(itm.map).length to be strictly equal to 2");
+      assert.strictEqual(itm.keyType.name, 'SomeEnum', "expected itm.keyType.name to be strictly equal to 'SomeEnum'");
+      assert(itm.keyType.isEnum, "expected itm.keyType.isEnum");
+    }));
+
+  it('ArrayList', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAE2phdmEudXRpbC5BcnJheUxpc3R4gdIdmcdhnQMAAUkABHNpemV4cAAAAAJ3BAAA' +
+    'AAJ0AANmb29zcgARamF2YS5sYW5nLkludGVnZXIS4qCk94GHOAIAAUkABXZhbHVleHIAEGph' +
+    'dmEubGFuZy5OdW1iZXKGrJUdC5TgiwIAAHhwAAAAe3h1cQB+AAAAAAACcQB+AAl0AANFbmQ=',
+    function(itm) {
+      assert(Array.isArray(itm.list), "expected Array.isArray(itm.list)");
+      assert.strictEqual(itm.list.length, 2, "expected itm.list.length to be strictly equal to 2");
+      assert.strictEqual(itm.list[0], 'foo', "expected itm.list[0] to be strictly equal to 'foo'");
+      assert.strictEqual(itm.list[1].value, 123, "expected itm.list[1].value to be strictly equal to 123");
+    }));
+
+  it('ArrayDeque', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAFGphdmEudXRpbC5BcnJheURlcXVlIHzaLiQNoIsDAAB4cHcEAAAAAnQAA2Zvb3Ny' +
+    'ABFqYXZhLmxhbmcuSW50ZWdlchLioKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51' +
+    'bWJlcoaslR0LlOCLAgAAeHAAAAB7eHVxAH4AAAAAAAJxAH4ACXQAA0VuZA==',
+    function(itm) {
+      assert(Array.isArray(itm.list), "expected Array.isArray(itm.list)");
+      assert.strictEqual(itm.list.length, 2, "expected itm.list.length to be strictly equal to 2");
+      assert.strictEqual(itm.list[0], 'foo', "expected itm.list[0] to be strictly equal to 'foo'");
+      assert.strictEqual(itm.list[1].value, 123, "expected itm.list[1].value to be strictly equal to 123");
+    }));
+
+  it('HashSet', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAACdAAD' +
+    'Zm9vc3IAEWphdmEubGFuZy5JbnRlZ2VyEuKgpPeBhzgCAAFJAAV2YWx1ZXhyABBqYXZhLmxh' +
+    'bmcuTnVtYmVyhqyVHQuU4IsCAAB4cAAAAHt4dXEAfgAAAAAAAnEAfgAJdAADRW5k',
+    function(itm) {
+      assert(itm.set instanceof Set, "expected itm.set instanceof Set");
+      assert.strictEqual(itm.set.size, 2, "expected itm.set.size to be strictly equal to 2");
+      assert(itm.set.has('foo'), "expected itm.set.has('foo')");
+    }));
+
 });

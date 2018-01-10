@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Martin von Gagern
+ * Copyright (c) 2015,2018 Martin von Gagern
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 "use strict";
 
+var assert = require("assert");
 var Long = require("long");
 
 var names = [
@@ -147,6 +148,10 @@ Parser.prototype.fieldDesc = function() {
     return res;
 }
 
+Parser.prototype.parseClass = function() {
+    return this.newHandle(this.classDesc());
+}
+
 Parser.prototype.parseObject = function() {
     var res = Object.defineProperties({}, {
         "class": {
@@ -172,16 +177,16 @@ Parser.prototype.recursiveClassData = function(cls, obj) {
 }
 
 Parser.prototype.classdata = function(cls) {
-    var res;
+    var res, data;
     var postproc = this[cls.name + "@" + cls.serialVersionUID];
     switch (cls.flags & 0x0f) {
     case 0x02: // SC_SERIALIZABLE without SC_WRITE_METHOD
         return this.values(cls);
     case 0x03: // SC_SERIALIZABLE with SC_WRITE_METHOD
         res = this.values(cls);
-        res["@"] = this.annotations();
+        data = res["@"] = this.annotations();
         if (postproc)
-            res = postproc.call(this, cls, res);
+            res = postproc.call(this, cls, res, data);
         return res;
     case 0x04: // SC_EXTERNALIZABLE without SC_BLOCKDATA
         throw Error("Can't parse version 1 external content");
@@ -329,28 +334,10 @@ Parser.prototype["prim["] = function() {
     return this.content();
 }
 
-function mapParser(cls, fields) {
-    var data = fields["@"];
-    var capacity = data[0].readInt32BE(0);
-    var size = data[0].readInt32BE(4);
-    var map = {};
-    for (var i = 0; i < size; ++i) {
-        var key = data[2*i + 1];
-        var value = data[2*i + 2];
-        if (typeof key !== "string") {
-            return fields;
-        }
-        map[key] = value;
-    }
-    delete fields["@"];
-    fields.map = map;
-    return fields;
+Parser.register = function(className, serialVersionUID, parser) {
+    assert.strictEqual(serialVersionUID.length, 16,
+                       "serialVersionUID must be 16 hex digits");
+    Parser.prototype[className + "@" + serialVersionUID] = parser;
 }
 
-Parser.prototype["java.util.Hashtable@13bb0f25214ae4b8"] = mapParser;
-Parser.prototype["java.util.HashMap@0507dac1c31660d1"] = mapParser;
-
-module.exports.parse = function parse(buf) {
-    var parser = new Parser(buf);
-    return parser.contents;
-}
+module.exports = Parser;

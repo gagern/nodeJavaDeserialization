@@ -242,4 +242,53 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("Object.keys(itm.map).length", "2");
     }
 
+    @SerializationTestCase(description="EnumMap")
+    public void enumMap() throws Exception {
+        java.util.EnumMap<SomeEnum, Object> m =
+            new java.util.EnumMap<>(SomeEnum.class);
+        m.put(SomeEnum.ONE, 123);
+        m.put(SomeEnum.THREE, "baz");
+        writeObject(m);
+        checkStrictEqual("typeof itm.map", "'object'");
+        checkStrictEqual("typeof itm['@']", "'undefined'");
+        checkStrictEqual("itm.map.THREE", "'baz'");
+        checkStrictEqual("itm.map.ONE.value", "123");
+        checkStrictEqual("Object.keys(itm.map).length", "2");
+        checkStrictEqual("itm.keyType.name", "'SomeEnum'");
+        checkThat("itm.keyType.isEnum");
+    }
+
+    private void listTestCase(java.util.Collection<Object> lst)
+        throws Exception
+    {
+        lst.add("foo");
+        lst.add(123);
+        writeObject(lst);
+        checkThat("Array.isArray(itm.list)");
+        checkStrictEqual("itm.list.length", "2");
+        checkStrictEqual("itm.list[0]", "'foo'");
+        checkStrictEqual("itm.list[1].value", "123");
+    }
+
+    @SerializationTestCase(description="ArrayList")
+    public void arrayList() throws Exception {
+        listTestCase(new java.util.ArrayList<Object>(8));
+    }
+
+    @SerializationTestCase(description="ArrayDeque")
+    public void arrayDeque() throws Exception {
+        listTestCase(new java.util.ArrayDeque<Object>(8));
+    }
+
+    @SerializationTestCase(description="HashSet")
+    public void hashSet() throws Exception {
+        java.util.HashSet<Object> set = new java.util.HashSet<>();
+        set.add("foo");
+        set.add(123);
+        writeObject(set);
+        checkThat("itm.set instanceof Set");
+        checkStrictEqual("itm.set.size", "2");
+        checkThat("itm.set.has('foo')");
+    }
+
 }
