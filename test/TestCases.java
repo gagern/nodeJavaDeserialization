@@ -71,6 +71,13 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("itm", "'sometext'");
     }
 
+    @SerializationTestCase(description="null")
+    public void nulls() throws Exception {
+        writeObject(null);
+        checkStrictEqual("typeof itm", "'object'");
+        checkStrictEqual("itm", "null");
+    }
+
     @SerializationTestCase public void duplicateObject() throws Exception {
         Object obj = new BaseClassWithField();
         writeObject(obj);

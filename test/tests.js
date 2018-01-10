@@ -19,7 +19,7 @@ function testCase(b64data, checks) {
   };
 }
 
-describe('Deserialization of', () => {
+describe('Deserialization of', function() {
 
   it('canaries only', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABdXEAfgAAAAAAAnEAfgADdAADRW5k',
@@ -31,6 +31,13 @@ describe('Deserialization of', () => {
     function(itm) {
       expect(typeof itm, "typeof itm").to.equal('string');
       expect(itm, "itm").to.equal('sometext');
+    }));
+
+  it('null', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABcHVxAH4AAAAAAAJxAH4AA3QAA0VuZA==',
+    function(itm) {
+      expect(typeof itm, "typeof itm").to.equal('object');
+      expect(itm, "itm").to.equal(null);
     }));
 
   it('duplicate object', testCase(

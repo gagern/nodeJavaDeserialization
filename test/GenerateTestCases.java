@@ -30,7 +30,7 @@ class GenerateTestCases {
              "  };\n" +
              "}\n" +
              "\n" +
-             "describe('Deserialization of', () => {\n\n");
+             "describe('Deserialization of', function() {\n\n");
         runTests(TestCases.class);
         System.out.print("});\n");
     }
