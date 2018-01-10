@@ -220,6 +220,7 @@ Parser.prototype.parseArray = function() {
 
 Parser.prototype.parseEnum = function() {
     var clazz = this.classDesc();
+    var deferredHandle = this.newDeferredHandle();
     var constant = this.content();
     var res = Object.defineProperties(new String(constant), {
         "class": {
@@ -231,7 +232,7 @@ Parser.prototype.parseEnum = function() {
             value: {}
         }
     });
-    this.newHandle(res);
+    deferredHandle(res);
     return res;
 }
 
@@ -278,6 +279,15 @@ Parser.prototype.values = function(cls) {
 Parser.prototype.newHandle = function(obj) {
     this.handles[this.nextHandle++] = obj;
     return obj;
+}
+
+Parser.prototype.newDeferredHandle = function() {
+    var idx = this.nextHandle++;
+    var handles = this.handles;
+    handles[idx] = null;
+    return function(obj) {
+        handles[idx] = obj;
+    };
 }
 
 Parser.prototype.parseReference = function() {
