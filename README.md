@@ -33,9 +33,16 @@ and e.g. `util.inspect` won't show them by default.
 If the class contained custom serialization code,
 the output from that is collected in a special property called `@`.
 One can write post-processing code to reformat the data from that list.
-Such code has already been added for `java.util.Hashtable` and
-`java.util.HashMap`, which will add a property called `map`
-if all the keys in the mapping are strings.
+Such code has already been added for the following types:
+
+* **`java.util.ArrayList`** – extracts a `list` field which is an ES Array
+* **`java.util.ArrayDeque`** – extracts a `list` field
+* **`java.util.Hashtable`** – extracts a `map` field which is an ES6 Map
+  and an `obj` for `String`-valued keys
+* **`java.util.HashMap`** – `map` and `obj` just as `Hashtable`
+* **`java.util.EnumMap`** – `map` and `obj`, the latter with enum
+  constant names as keys
+* **`java.util.HashSet`** – extracts a `set` field which is an ES6 Set
 
 ## Contributing
 
