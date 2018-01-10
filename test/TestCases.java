@@ -148,7 +148,7 @@ class TestCases extends GenerateTestCases {
 
     @SerializationTestCase public void primitiveArray() throws Exception {
         writeObject(new int[] { 12, 34, 56 });
-        checkThat("Array.isArray(itm)");
+        checkArray("itm");
         checkLength("itm", 3);
         checkStrictEqual("itm[0]", "12");
         checkStrictEqual("itm[1]", "34");
@@ -161,9 +161,9 @@ class TestCases extends GenerateTestCases {
                 new String[] { "a", "b" },
                 new String[] { "c" }
             });
-        checkThat("Array.isArray(itm)");
+        checkArray("itm");
         checkLength("itm", 2);
-        checkThat("Array.isArray(itm[0])");
+        checkArray("itm[0]");
         checkLength("itm[0]", 2);
         checkLength("itm[1]", 1);
         checkStrictEqual("itm[0][0]", "'a'");
@@ -173,9 +173,9 @@ class TestCases extends GenerateTestCases {
 
     @SerializationTestCase public void arrayFields() throws Exception {
         writeObject(new ArrayFields());
-        checkThat("Array.isArray(itm.ia)");
-        checkThat("Array.isArray(itm.iaa)");
-        checkThat("Array.isArray(itm.sa)");
+        checkArray("itm.ia");
+        checkArray("itm.iaa");
+        checkArray("itm.sa");
         checkStrictEqual("itm.iaa[1][2]", "23");
         checkStrictEqual("itm.sa[1]", "'bar'");
     }
@@ -203,7 +203,7 @@ class TestCases extends GenerateTestCases {
 
     @SerializationTestCase public void customFormat() throws Exception {
         writeObject(new CustomFormat());
-        checkThat("Array.isArray(itm['@'])");
+        checkArray("itm['@']");
         checkLength("itm['@']", 2);
         checkThat("Buffer.isBuffer(itm['@'][0])");
         checkStrictEqual("itm['@'][0].toString('hex')",
@@ -240,7 +240,7 @@ class TestCases extends GenerateTestCases {
         args = "itm, i123";
         checkStrictEqual("typeof itm.obj", "'object'");
         checkStrictEqual("typeof itm['@']", "'object'");
-        checkThat("Array.isArray(itm['@'])");
+        checkArray("itm['@']");
         checkKeys("itm.obj", "'baz'");
         checkStrictEqual("itm.obj.baz", "'bar'");
         checkInstanceof("itm.map", "Map");
@@ -304,7 +304,7 @@ class TestCases extends GenerateTestCases {
         lst.add("foo");
         lst.add(123);
         writeObject(lst);
-        checkThat("Array.isArray(itm.list)");
+        checkArray("itm.list");
         checkLength("itm.list", 2);
         checkStrictEqual("itm.list[0]", "'foo'");
         checkStrictEqual("itm.list[1].value", "123");

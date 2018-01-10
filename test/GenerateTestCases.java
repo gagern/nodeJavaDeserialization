@@ -138,6 +138,10 @@ class GenerateTestCases {
             expect(actual, "to.have.all.keys", "[" + keys + "]");
     }
 
+    protected void checkArray(String actual) {
+        expect(actual, "to.be.an('Array')");
+    }
+
     private void prepare() throws Exception {
         dataBuf = new ByteArrayOutputStream();
         data = new ObjectOutputStream(dataBuf);

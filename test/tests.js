@@ -104,7 +104,7 @@ describe('Deserialization of', () => {
   it('primitive array', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABdXIAAltJTbpgJnbqsqUCAAB4cAAAAAMAAAAMAAAAIgAAADh1cQB+AAAAAAACcQB+AAV0AANFbmQ=',
     function(itm) {
-      expect(Array.isArray(itm), "Array.isArray(itm)").to.be.true;
+      expect(itm, "itm").to.be.an('Array');
       expect(itm, "itm").to.have.lengthOf(3);
       expect(itm[0], "itm[0]").to.equal(12);
       expect(itm[1], "itm[1]").to.equal(34);
@@ -115,9 +115,9 @@ describe('Deserialization of', () => {
   it('nested array', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABdXIAFFtbTGphdmEubGFuZy5TdHJpbmc7Mk0JrYQy5FcCAAB4cAAAAAJ1cgATW0xqYXZhLmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAAAAACdAABYXQAAWJ1cQB+AAUAAAABdAABY3VxAH4AAAAAAAJxAH4AC3QAA0VuZA==',
     function(itm) {
-      expect(Array.isArray(itm), "Array.isArray(itm)").to.be.true;
+      expect(itm, "itm").to.be.an('Array');
       expect(itm, "itm").to.have.lengthOf(2);
-      expect(Array.isArray(itm[0]), "Array.isArray(itm[0])").to.be.true;
+      expect(itm[0], "itm[0]").to.be.an('Array');
       expect(itm[0], "itm[0]").to.have.lengthOf(2);
       expect(itm[1], "itm[1]").to.have.lengthOf(1);
       expect(itm[0][0], "itm[0][0]").to.equal('a');
@@ -128,9 +128,9 @@ describe('Deserialization of', () => {
   it('array fields', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IAC0FycmF5RmllbGRzAAAAAAAAAAECAANbAAJpYXQAAltJWwADaWFhdAADW1tJWwACc2F0ABNbTGphdmEvbGFuZy9TdHJpbmc7eHB1cgACW0lNumAmduqypQIAAHhwAAAAAwAAAAwAAAAiAAAAOHVyAANbW0kX9+RPGY+JPAIAAHhwAAAAAnVxAH4ACAAAAAIAAAALAAAADHVxAH4ACAAAAAMAAAAVAAAAFgAAABd1cgATW0xqYXZhLmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAAAAACdAADZm9vdAADYmFydXEAfgAAAAAAAnEAfgASdAADRW5k',
     function(itm) {
-      expect(Array.isArray(itm.ia), "Array.isArray(itm.ia)").to.be.true;
-      expect(Array.isArray(itm.iaa), "Array.isArray(itm.iaa)").to.be.true;
-      expect(Array.isArray(itm.sa), "Array.isArray(itm.sa)").to.be.true;
+      expect(itm.ia, "itm.ia").to.be.an('Array');
+      expect(itm.iaa, "itm.iaa").to.be.an('Array');
+      expect(itm.sa, "itm.sa").to.be.an('Array');
       expect(itm.iaa[1][2], "itm.iaa[1][2]").to.equal(23);
       expect(itm.sa[1], "itm.sa[1]").to.equal('bar');
     }));
@@ -156,7 +156,7 @@ describe('Deserialization of', () => {
   it('custom format', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IADEN1c3RvbUZvcm1hdAAAAAAAAAABAwABSQADZm9veHAAADA5dwu16y0AtestALXrLXQACGFuZCBtb3JleHVxAH4AAAAAAAJxAH4ABnQAA0VuZA==',
     function(itm) {
-      expect(Array.isArray(itm['@']), "Array.isArray(itm['@'])").to.be.true;
+      expect(itm['@'], "itm['@']").to.be.an('Array');
       expect(itm['@'], "itm['@']").to.have.lengthOf(2);
       expect(Buffer.isBuffer(itm['@'][0]), "Buffer.isBuffer(itm['@'][0])").to.be.true;
       expect(itm['@'][0].toString('hex'), "itm['@'][0].toString('hex')").to.equal('b5eb2d00b5eb2d00b5eb2d');
@@ -183,7 +183,7 @@ describe('Deserialization of', () => {
     function(itm, i123) {
       expect(typeof itm.obj, "typeof itm.obj").to.equal('object');
       expect(typeof itm['@'], "typeof itm['@']").to.equal('object');
-      expect(Array.isArray(itm['@']), "Array.isArray(itm['@'])").to.be.true;
+      expect(itm['@'], "itm['@']").to.be.an('Array');
       expect(itm.obj, "itm.obj").to.have.all.keys(['baz']);
       expect(itm.obj.baz, "itm.obj.baz").to.equal('bar');
       expect(itm.map, "itm.map").to.be.an.instanceof(Map);
@@ -234,7 +234,7 @@ describe('Deserialization of', () => {
   it('ArrayList', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IAE2phdmEudXRpbC5BcnJheUxpc3R4gdIdmcdhnQMAAUkABHNpemV4cAAAAAJ3BAAAAAJ0AANmb29zcgARamF2YS5sYW5nLkludGVnZXIS4qCk94GHOAIAAUkABXZhbHVleHIAEGphdmEubGFuZy5OdW1iZXKGrJUdC5TgiwIAAHhwAAAAe3h1cQB+AAAAAAACcQB+AAl0AANFbmQ=',
     function(itm) {
-      expect(Array.isArray(itm.list), "Array.isArray(itm.list)").to.be.true;
+      expect(itm.list, "itm.list").to.be.an('Array');
       expect(itm.list, "itm.list").to.have.lengthOf(2);
       expect(itm.list[0], "itm.list[0]").to.equal('foo');
       expect(itm.list[1].value, "itm.list[1].value").to.equal(123);
@@ -243,7 +243,7 @@ describe('Deserialization of', () => {
   it('ArrayDeque', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IAFGphdmEudXRpbC5BcnJheURlcXVlIHzaLiQNoIsDAAB4cHcEAAAAAnQAA2Zvb3NyABFqYXZhLmxhbmcuSW50ZWdlchLioKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoaslR0LlOCLAgAAeHAAAAB7eHVxAH4AAAAAAAJxAH4ACXQAA0VuZA==',
     function(itm) {
-      expect(Array.isArray(itm.list), "Array.isArray(itm.list)").to.be.true;
+      expect(itm.list, "itm.list").to.be.an('Array');
       expect(itm.list, "itm.list").to.have.lengthOf(2);
       expect(itm.list[0], "itm.list[0]").to.equal('foo');
       expect(itm.list[1].value, "itm.list[1].value").to.equal(123);
