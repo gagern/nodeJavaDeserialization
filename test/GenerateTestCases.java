@@ -154,7 +154,7 @@ class GenerateTestCases {
         out.print(description);
         out.print("', testCase(\n    '");
         String b64 = Base64.getEncoder().encodeToString(dataBuf.toByteArray());
-        int chunklen = 72;
+        int chunklen = 1024;
         int i;
         for (i = 0; i + chunklen < b64.length(); i += chunklen) {
             out.print(b64.substring(i, i + chunklen));
