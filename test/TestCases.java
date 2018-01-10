@@ -253,7 +253,7 @@ class TestCases extends GenerateTestCases {
     public void emptyHashMap() throws Exception {
         writeObject(new HashMap<Object, Integer>());
         checkStrictEqual("typeof itm.obj", "'object'");
-        checkLength("Object.keys(itm.obj)", 0);
+        checkKeys("itm.obj", "");
         checkInstanceof("itm.map", "Map");
         checkStrictEqual("itm.map.size", "0");
     }

@@ -132,7 +132,10 @@ class GenerateTestCases {
     }
 
     protected void checkKeys(String actual, String keys) {
-        expect(actual, "to.have.all.keys", "[" + keys + "]");
+        if (keys.length() == 0)
+            expect(actual, "to.be.an('object').that.is.empty");
+        else
+            expect(actual, "to.have.all.keys", "[" + keys + "]");
     }
 
     private void prepare() throws Exception {

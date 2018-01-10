@@ -196,7 +196,7 @@ describe('Deserialization of', () => {
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhyZXNob2xkeHA/QAAAAAAAAHcIAAAAEAAAAAB4dXEAfgAAAAAAAnEAfgAFdAADRW5k',
     function(itm) {
       expect(typeof itm.obj, "typeof itm.obj").to.equal('object');
-      expect(Object.keys(itm.obj), "Object.keys(itm.obj)").to.have.lengthOf(0);
+      expect(itm.obj, "itm.obj").to.be.an('object').that.is.empty;
       expect(itm.map, "itm.map").to.be.an.instanceof(Map);
       expect(itm.map.size, "itm.map.size").to.equal(0);
     }));
