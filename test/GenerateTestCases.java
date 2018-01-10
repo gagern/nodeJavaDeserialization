@@ -123,6 +123,18 @@ class GenerateTestCases {
         checkThat(actual + " != " + expected);
     }
 
+    protected void checkInstanceof(String actual, String type) {
+        expect(actual, "to.be.an.instanceof", type);
+    }
+
+    protected void checkLength(String actual, int length) {
+        expect(actual, "to.have.lengthOf", Integer.toString(length));
+    }
+
+    protected void checkKeys(String actual, String keys) {
+        expect(actual, "to.have.all.keys", "[" + keys + "]");
+    }
+
     private void prepare() throws Exception {
         dataBuf = new ByteArrayOutputStream();
         data = new ObjectOutputStream(dataBuf);

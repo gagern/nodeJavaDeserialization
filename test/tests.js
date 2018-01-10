@@ -35,6 +35,14 @@ describe('Deserialization of', () => {
       expect(itm, "itm").to.equal('sometext');
     }));
 
+  it('duplicate object', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
+    'fgABc3IAEkJhc2VDbGFzc1dpdGhGaWVsZAAAAAAAABI0AgABSQADZm9veHAAAAB7dAAFZGVs' +
+    'aW1xAH4ABHVxAH4AAAAAAAJxAH4ABnQAA0VuZA==',
+    function(obj1, delim, obj2) {
+      expect(obj1, "obj1").to.equal(obj2);
+    }));
+
   it('primitive fields', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
     'fgABc3IAD1ByaW1pdGl2ZUZpZWxkcwAAEjRWeJq8AgAIWgACYm9CAAJieUMAAWNEAAFkRgAB' +
@@ -51,7 +59,7 @@ describe('Deserialization of', () => {
       expect(itm.f, "itm.f").to.equal(76.5);
       expect(itm.bo, "itm.bo").to.equal(true);
       expect(itm.c, "itm.c").to.equal('\u1234');
-      expect(Object.keys(itm).length, "Object.keys(itm).length").to.equal(8);
+      expect(itm, "itm").to.have.all.keys(['i', 's', 'l', 'by', 'd', 'f', 'bo', 'c']);
       expect(itm.class.serialVersionUID, "itm.class.serialVersionUID").to.equal('0000123456789abc');
     }));
 
@@ -120,7 +128,7 @@ describe('Deserialization of', () => {
     'AANFbmQ=',
     function(itm) {
       expect(Array.isArray(itm), "Array.isArray(itm)").to.be.true;
-      expect(itm.length, "itm.length").to.equal(3);
+      expect(itm, "itm").to.have.lengthOf(3);
       expect(itm[0], "itm[0]").to.equal(12);
       expect(itm[1], "itm[1]").to.equal(34);
       expect(itm[2], "itm[2]").to.equal(56);
@@ -134,10 +142,10 @@ describe('Deserialization of', () => {
     'AH4AAAAAAAJxAH4AC3QAA0VuZA==',
     function(itm) {
       expect(Array.isArray(itm), "Array.isArray(itm)").to.be.true;
-      expect(itm.length, "itm.length").to.equal(2);
+      expect(itm, "itm").to.have.lengthOf(2);
       expect(Array.isArray(itm[0]), "Array.isArray(itm[0])").to.be.true;
-      expect(itm[0].length, "itm[0].length").to.equal(2);
-      expect(itm[1].length, "itm[1].length").to.equal(1);
+      expect(itm[0], "itm[0]").to.have.lengthOf(2);
+      expect(itm[1], "itm[1]").to.have.lengthOf(1);
       expect(itm[0][0], "itm[0][0]").to.equal('a');
       expect(itm[0][1], "itm[0][1]").to.equal('b');
       expect(itm[1][0], "itm[1][0]").to.equal('c');
@@ -161,10 +169,10 @@ describe('Deserialization of', () => {
   it('enum', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEA' +
     'fgABfnIACFNvbWVFbnVtAAAAAAAAAAASAAB4cgAOamF2YS5sYW5nLkVudW0AAAAAAAAAABIA' +
-    'AHhwdAADT05FfnEAfgADdAAFVEhSRUV1cQB+AAAAAAACcQB+AAl0AANFbmQ=',
-    function(one, three) {
+    'AHhwdAADT05FfnEAfgADdAAFVEhSRUVxAH4AB3VxAH4AAAAAAAJxAH4ACXQAA0VuZA==',
+    function(one, three, three2) {
       expect(typeof one, "typeof one").to.equal('object');
-      expect(one instanceof String, "one instanceof String").to.be.true;
+      expect(one, "one").to.be.an.instanceof(String);
       expect(one == 'ONE', "one == 'ONE'").to.be.true;
       expect(one, "one").to.not.equal('ONE');
       expect(one.class.name, "one.class.name").to.equal('SomeEnum');
@@ -172,6 +180,10 @@ describe('Deserialization of', () => {
       expect(one.class.super.name, "one.class.super.name").to.equal('java.lang.Enum');
       expect(one.class.super.super, "one.class.super.super").to.equal(null);
       expect(three == 'THREE', "three == 'THREE'").to.be.true;
+      expect(typeof three2, "typeof three2").to.equal('object');
+      expect(three2, "three2").to.be.an.instanceof(String);
+      expect(three2 == 'THREE', "three2 == 'THREE'").to.be.true;
+      expect(three2, "three2").to.equal(three);
     }));
 
   it('custom format', testCase(
@@ -180,7 +192,7 @@ describe('Deserialization of', () => {
     'LXQACGFuZCBtb3JleHVxAH4AAAAAAAJxAH4ABnQAA0VuZA==',
     function(itm) {
       expect(Array.isArray(itm['@']), "Array.isArray(itm['@'])").to.be.true;
-      expect(itm['@'].length, "itm['@'].length").to.equal(2);
+      expect(itm['@'], "itm['@']").to.have.lengthOf(2);
       expect(Buffer.isBuffer(itm['@'][0]), "Buffer.isBuffer(itm['@'][0])").to.be.true;
       expect(itm['@'][0].toString('hex'), "itm['@'][0].toString('hex')").to.equal('b5eb2d00b5eb2d00b5eb2d');
       expect(itm['@'][1], "itm['@'][1]").to.equal('and more');
@@ -194,11 +206,15 @@ describe('Deserialization of', () => {
     'YW5nLkludGVnZXIS4qCk94GHOAIAAUkABXZhbHVleHIAEGphdmEubGFuZy5OdW1iZXKGrJUd' +
     'C5TgiwIAAHhwAAAAe3h1cQB+AAAAAAACcQB+AAt0AANFbmQ=',
     function(itm) {
-      expect(typeof itm.map, "typeof itm.map").to.equal('object');
+      expect(typeof itm.obj, "typeof itm.obj").to.equal('object');
       expect(typeof itm['@'], "typeof itm['@']").to.equal('object');
-      expect(itm.map.bar, "itm.map.bar").to.equal('baz');
-      expect(itm.map.foo.value, "itm.map.foo.value").to.equal(123);
-      expect(Object.keys(itm.map).length, "Object.keys(itm.map).length").to.equal(2);
+      expect(itm.obj.bar, "itm.obj.bar").to.equal('baz');
+      expect(itm.obj.foo.value, "itm.obj.foo.value").to.equal(123);
+      expect(itm.obj, "itm.obj").to.have.all.keys(['foo', 'bar']);
+      expect(itm.map, "itm.map").to.be.an.instanceof(Map);
+      expect(itm.map.get('bar'), "itm.map.get('bar')").to.equal('baz');
+      expect(itm.map.get('foo').value, "itm.map.get('foo').value").to.equal(123);
+      expect(itm.map.size, "itm.map.size").to.equal(2);
     }));
 
   it('HashMap<not String, …>', testCase(
@@ -206,11 +222,17 @@ describe('Deserialization of', () => {
     'fgABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhy' +
     'ZXNob2xkeHA/QAAAAAAADHcIAAAAEAAAAAJ0AANiYXp0AANiYXJzcgARamF2YS5sYW5nLklu' +
     'dGVnZXIS4qCk94GHOAIAAUkABXZhbHVleHIAEGphdmEubGFuZy5OdW1iZXKGrJUdC5TgiwIA' +
-    'AHhwAAAAe3QAA2Zvb3h1cQB+AAAAAAACcQB+AAt0AANFbmQ=',
-    function(itm) {
-      expect(typeof itm.map, "typeof itm.map").to.equal('undefined');
+    'AHhwAAAAe3QAA2Zvb3hxAH4ACXVxAH4AAAAAAAJxAH4AC3QAA0VuZA==',
+    function(itm, i123) {
+      expect(typeof itm.obj, "typeof itm.obj").to.equal('object');
       expect(typeof itm['@'], "typeof itm['@']").to.equal('object');
       expect(Array.isArray(itm['@']), "Array.isArray(itm['@'])").to.be.true;
+      expect(itm.obj, "itm.obj").to.have.all.keys(['baz']);
+      expect(itm.obj.baz, "itm.obj.baz").to.equal('bar');
+      expect(itm.map, "itm.map").to.be.an.instanceof(Map);
+      expect(itm.map.get('baz'), "itm.map.get('baz')").to.equal('bar');
+      expect(itm.map.get(i123), "itm.map.get(i123)").to.equal('foo');
+      expect(itm.map.size, "itm.map.size").to.equal(2);
     }));
 
   it('empty HashMap', testCase(
@@ -218,8 +240,10 @@ describe('Deserialization of', () => {
     'fgABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhy' +
     'ZXNob2xkeHA/QAAAAAAAAHcIAAAAEAAAAAB4dXEAfgAAAAAAAnEAfgAFdAADRW5k',
     function(itm) {
-      expect(typeof itm.map, "typeof itm.map").to.equal('object');
-      expect(Object.keys(itm.map).length, "Object.keys(itm.map).length").to.equal(0);
+      expect(typeof itm.obj, "typeof itm.obj").to.equal('object');
+      expect(Object.keys(itm.obj), "Object.keys(itm.obj)").to.have.lengthOf(0);
+      expect(itm.map, "itm.map").to.be.an.instanceof(Map);
+      expect(itm.map.size, "itm.map.size").to.equal(0);
     }));
 
   it('Hashtable<String, …>', testCase(
@@ -229,11 +253,15 @@ describe('Deserialization of', () => {
     'LmxhbmcuSW50ZWdlchLioKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoas' +
     'lR0LlOCLAgAAeHAAAAB7eHVxAH4AAAAAAAJxAH4AC3QAA0VuZA==',
     function(itm) {
-      expect(typeof itm.map, "typeof itm.map").to.equal('object');
+      expect(typeof itm.obj, "typeof itm.obj").to.equal('object');
       expect(typeof itm['@'], "typeof itm['@']").to.equal('object');
-      expect(itm.map.bar, "itm.map.bar").to.equal('baz');
-      expect(itm.map.foo.value, "itm.map.foo.value").to.equal(123);
-      expect(Object.keys(itm.map).length, "Object.keys(itm.map).length").to.equal(2);
+      expect(itm.obj.bar, "itm.obj.bar").to.equal('baz');
+      expect(itm.obj.foo.value, "itm.obj.foo.value").to.equal(123);
+      expect(itm.obj, "itm.obj").to.have.all.keys(['foo', 'bar']);
+      expect(itm.map, "itm.map").to.be.an.instanceof(Map);
+      expect(itm.map.get('bar'), "itm.map.get('bar')").to.equal('baz');
+      expect(itm.map.get('foo').value, "itm.map.get('foo').value").to.equal(123);
+      expect(itm.map.size, "itm.map.size").to.equal(2);
     }));
 
   it('EnumMap', testCase(
@@ -242,15 +270,19 @@ describe('Deserialization of', () => {
     'bGFuZy9DbGFzczt4cHZyAAhTb21lRW51bQAAAAAAAAAAEgAAeHIADmphdmEubGFuZy5FbnVt' +
     'AAAAAAAAAAASAAB4cHcEAAAAAn5xAH4ABnQAA09ORXNyABFqYXZhLmxhbmcuSW50ZWdlchLi' +
     'oKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoaslR0LlOCLAgAAeHAAAAB7' +
-    'fnEAfgAGdAAFVEhSRUV0AANiYXp4dXEAfgAAAAAAAnEAfgARdAADRW5k',
-    function(itm) {
-      expect(typeof itm.map, "typeof itm.map").to.equal('object');
+    'fnEAfgAGdAAFVEhSRUV0AANiYXp4cQB+AAlxAH4ADnVxAH4AAAAAAAJxAH4AEXQAA0VuZA==',
+    function(itm, one, three) {
+      expect(typeof itm.obj, "typeof itm.obj").to.equal('object');
       expect(typeof itm['@'], "typeof itm['@']").to.equal('object');
-      expect(itm.map.THREE, "itm.map.THREE").to.equal('baz');
-      expect(itm.map.ONE.value, "itm.map.ONE.value").to.equal(123);
-      expect(Object.keys(itm.map).length, "Object.keys(itm.map).length").to.equal(2);
+      expect(itm.obj.THREE, "itm.obj.THREE").to.equal('baz');
+      expect(itm.obj.ONE.value, "itm.obj.ONE.value").to.equal(123);
+      expect(itm.obj, "itm.obj").to.have.all.keys(['ONE', 'THREE']);
       expect(itm.keyType.name, "itm.keyType.name").to.equal('SomeEnum');
       expect(itm.keyType.isEnum, "itm.keyType.isEnum").to.be.true;
+      expect(itm.map, "itm.map").to.be.an.instanceof(Map);
+      expect(itm.map.get(three), "itm.map.get(three)").to.equal('baz');
+      expect(itm.map.get(one).value, "itm.map.get(one).value").to.equal(123);
+      expect(itm.map.size, "itm.map.size").to.equal(2);
     }));
 
   it('ArrayList', testCase(
@@ -260,7 +292,7 @@ describe('Deserialization of', () => {
     'dmEubGFuZy5OdW1iZXKGrJUdC5TgiwIAAHhwAAAAe3h1cQB+AAAAAAACcQB+AAl0AANFbmQ=',
     function(itm) {
       expect(Array.isArray(itm.list), "Array.isArray(itm.list)").to.be.true;
-      expect(itm.list.length, "itm.list.length").to.equal(2);
+      expect(itm.list, "itm.list").to.have.lengthOf(2);
       expect(itm.list[0], "itm.list[0]").to.equal('foo');
       expect(itm.list[1].value, "itm.list[1].value").to.equal(123);
     }));
@@ -272,7 +304,7 @@ describe('Deserialization of', () => {
     'bWJlcoaslR0LlOCLAgAAeHAAAAB7eHVxAH4AAAAAAAJxAH4ACXQAA0VuZA==',
     function(itm) {
       expect(Array.isArray(itm.list), "Array.isArray(itm.list)").to.be.true;
-      expect(itm.list.length, "itm.list.length").to.equal(2);
+      expect(itm.list, "itm.list").to.have.lengthOf(2);
       expect(itm.list[0], "itm.list[0]").to.equal('foo');
       expect(itm.list[1].value, "itm.list[1].value").to.equal(123);
     }));
@@ -283,7 +315,7 @@ describe('Deserialization of', () => {
     'Zm9vc3IAEWphdmEubGFuZy5JbnRlZ2VyEuKgpPeBhzgCAAFJAAV2YWx1ZXhyABBqYXZhLmxh' +
     'bmcuTnVtYmVyhqyVHQuU4IsCAAB4cAAAAHt4dXEAfgAAAAAAAnEAfgAJdAADRW5k',
     function(itm) {
-      expect(itm.set instanceof Set, "itm.set instanceof Set").to.be.true;
+      expect(itm.set, "itm.set").to.be.an.instanceof(Set);
       expect(itm.set.size, "itm.set.size").to.equal(2);
       expect(itm.set.has('foo'), "itm.set.has('foo')").to.be.true;
     }));

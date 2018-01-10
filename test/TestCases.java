@@ -71,6 +71,15 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("itm", "'sometext'");
     }
 
+    @SerializationTestCase public void duplicateObject() throws Exception {
+        Object obj = new BaseClassWithField();
+        writeObject(obj);
+        writeObject("delim");
+        writeObject(obj);
+        args = "obj1, delim, obj2";
+        checkStrictEqual("obj1", "obj2");
+    }
+
     @SerializationTestCase public void primitiveFields() throws Exception {
         writeObject(new PrimitiveFields());
         checkStrictEqual("itm.i", "-123");
@@ -83,7 +92,7 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("itm.f", "76.5");
         checkStrictEqual("itm.bo", "true");
         checkStrictEqual("itm.c", "'\\u1234'");
-        checkStrictEqual("Object.keys(itm).length", "8");
+        checkKeys("itm", "'i', 's', 'l', 'by', 'd', 'f', 'bo', 'c'");
         checkStrictEqual("itm.class.serialVersionUID", "'0000123456789abc'");
     }
 
@@ -140,7 +149,7 @@ class TestCases extends GenerateTestCases {
     @SerializationTestCase public void primitiveArray() throws Exception {
         writeObject(new int[] { 12, 34, 56 });
         checkThat("Array.isArray(itm)");
-        checkStrictEqual("itm.length", "3");
+        checkLength("itm", 3);
         checkStrictEqual("itm[0]", "12");
         checkStrictEqual("itm[1]", "34");
         checkStrictEqual("itm[2]", "56");
@@ -153,10 +162,10 @@ class TestCases extends GenerateTestCases {
                 new String[] { "c" }
             });
         checkThat("Array.isArray(itm)");
-        checkStrictEqual("itm.length", "2");
+        checkLength("itm", 2);
         checkThat("Array.isArray(itm[0])");
-        checkStrictEqual("itm[0].length", "2");
-        checkStrictEqual("itm[1].length", "1");
+        checkLength("itm[0]", 2);
+        checkLength("itm[1]", 1);
         checkStrictEqual("itm[0][0]", "'a'");
         checkStrictEqual("itm[0][1]", "'b'");
         checkStrictEqual("itm[1][0]", "'c'");
@@ -175,9 +184,10 @@ class TestCases extends GenerateTestCases {
     public void enums() throws Exception {
         writeObject(SomeEnum.ONE);
         writeObject(SomeEnum.THREE);
-        args = "one, three";
+        writeObject(SomeEnum.THREE);
+        args = "one, three, three2";
         checkStrictEqual("typeof one", "'object'");
-        checkThat("one instanceof String");
+        checkInstanceof("one", "String");
         checkLooseEqual("one", "'ONE'");
         checkNotStrictEqual("one", "'ONE'");
         checkStrictEqual("one.class.name", "'SomeEnum'");
@@ -185,12 +195,16 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("one.class.super.name", "'java.lang.Enum'");
         checkStrictEqual("one.class.super.super", "null");
         checkLooseEqual("three", "'THREE'");
+        checkStrictEqual("typeof three2", "'object'");
+        checkInstanceof("three2", "String");
+        checkLooseEqual("three2", "'THREE'");
+        checkStrictEqual("three2", "three");
     }
 
     @SerializationTestCase public void customFormat() throws Exception {
         writeObject(new CustomFormat());
         checkThat("Array.isArray(itm['@'])");
-        checkStrictEqual("itm['@'].length", "2");
+        checkLength("itm['@']", 2);
         checkThat("Buffer.isBuffer(itm['@'][0])");
         checkStrictEqual("itm['@'][0].toString('hex')",
                          "'b5eb2d00b5eb2d00b5eb2d'");
@@ -204,29 +218,44 @@ class TestCases extends GenerateTestCases {
         m.put("foo", 123);
         m.put("bar", "baz");
         writeObject(m);
-        checkStrictEqual("typeof itm.map", "'object'");
+        checkStrictEqual("typeof itm.obj", "'object'");
         checkStrictEqual("typeof itm['@']", "'object'");
-        checkStrictEqual("itm.map.bar", "'baz'");
-        checkStrictEqual("itm.map.foo.value", "123");
-        checkStrictEqual("Object.keys(itm.map).length", "2");
+        checkStrictEqual("itm.obj.bar", "'baz'");
+        checkStrictEqual("itm.obj.foo.value", "123");
+        checkKeys("itm.obj", "'foo', 'bar'");
+        checkInstanceof("itm.map", "Map");
+        checkStrictEqual("itm.map.get('bar')", "'baz'");
+        checkStrictEqual("itm.map.get('foo').value", "123");
+        checkStrictEqual("itm.map.size", "2");
     }
 
     @SerializationTestCase(description="HashMap<not String, …>")
     public void hashMapMixed() throws Exception {
         HashMap<Object, String> m = new HashMap<>();
-        m.put(123, "foo");
+        Object i123 = 123;
+        m.put(i123, "foo");
         m.put("baz", "bar");
         writeObject(m);
-        checkStrictEqual("typeof itm.map", "'undefined'");
+        writeObject(i123);
+        args = "itm, i123";
+        checkStrictEqual("typeof itm.obj", "'object'");
         checkStrictEqual("typeof itm['@']", "'object'");
         checkThat("Array.isArray(itm['@'])");
+        checkKeys("itm.obj", "'baz'");
+        checkStrictEqual("itm.obj.baz", "'bar'");
+        checkInstanceof("itm.map", "Map");
+        checkStrictEqual("itm.map.get('baz')", "'bar'");
+        checkStrictEqual("itm.map.get(i123)", "'foo'");
+        checkStrictEqual("itm.map.size", "2");
     }
 
     @SerializationTestCase(description="empty HashMap")
     public void emptyHashMap() throws Exception {
         writeObject(new HashMap<Object, Integer>());
-        checkStrictEqual("typeof itm.map", "'object'");
-        checkStrictEqual("Object.keys(itm.map).length", "0");
+        checkStrictEqual("typeof itm.obj", "'object'");
+        checkLength("Object.keys(itm.obj)", 0);
+        checkInstanceof("itm.map", "Map");
+        checkStrictEqual("itm.map.size", "0");
     }
 
     @SerializationTestCase(description="Hashtable<String, …>")
@@ -235,11 +264,15 @@ class TestCases extends GenerateTestCases {
         m.put("foo", 123);
         m.put("bar", "baz");
         writeObject(m);
-        checkStrictEqual("typeof itm.map", "'object'");
+        checkStrictEqual("typeof itm.obj", "'object'");
         checkStrictEqual("typeof itm['@']", "'object'");
-        checkStrictEqual("itm.map.bar", "'baz'");
-        checkStrictEqual("itm.map.foo.value", "123");
-        checkStrictEqual("Object.keys(itm.map).length", "2");
+        checkStrictEqual("itm.obj.bar", "'baz'");
+        checkStrictEqual("itm.obj.foo.value", "123");
+        checkKeys("itm.obj", "'foo', 'bar'");
+        checkInstanceof("itm.map", "Map");
+        checkStrictEqual("itm.map.get('bar')", "'baz'");
+        checkStrictEqual("itm.map.get('foo').value", "123");
+        checkStrictEqual("itm.map.size", "2");
     }
 
     @SerializationTestCase(description="EnumMap")
@@ -249,13 +282,20 @@ class TestCases extends GenerateTestCases {
         m.put(SomeEnum.ONE, 123);
         m.put(SomeEnum.THREE, "baz");
         writeObject(m);
-        checkStrictEqual("typeof itm.map", "'object'");
+        writeObject(SomeEnum.ONE);
+        writeObject(SomeEnum.THREE);
+        args = "itm, one, three";
+        checkStrictEqual("typeof itm.obj", "'object'");
         checkStrictEqual("typeof itm['@']", "'object'");
-        checkStrictEqual("itm.map.THREE", "'baz'");
-        checkStrictEqual("itm.map.ONE.value", "123");
-        checkStrictEqual("Object.keys(itm.map).length", "2");
+        checkStrictEqual("itm.obj.THREE", "'baz'");
+        checkStrictEqual("itm.obj.ONE.value", "123");
+        checkKeys("itm.obj", "'ONE', 'THREE'");
         checkStrictEqual("itm.keyType.name", "'SomeEnum'");
         checkThat("itm.keyType.isEnum");
+        checkInstanceof("itm.map", "Map");
+        checkStrictEqual("itm.map.get(three)", "'baz'");
+        checkStrictEqual("itm.map.get(one).value", "123");
+        checkStrictEqual("itm.map.size", "2");
     }
 
     private void listTestCase(java.util.Collection<Object> lst)
@@ -265,7 +305,7 @@ class TestCases extends GenerateTestCases {
         lst.add(123);
         writeObject(lst);
         checkThat("Array.isArray(itm.list)");
-        checkStrictEqual("itm.list.length", "2");
+        checkLength("itm.list", 2);
         checkStrictEqual("itm.list[0]", "'foo'");
         checkStrictEqual("itm.list[1].value", "123");
     }
@@ -286,7 +326,7 @@ class TestCases extends GenerateTestCases {
         set.add("foo");
         set.add(123);
         writeObject(set);
-        checkThat("itm.set instanceof Set");
+        checkInstanceof("itm.set", "Set");
         checkStrictEqual("itm.set.size", "2");
         checkThat("itm.set.has('foo')");
     }

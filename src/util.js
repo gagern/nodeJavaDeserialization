@@ -32,28 +32,33 @@ function listParser(cls, fields, data) {
 function mapParser(cls, fields, data) {
     var capacity = data[0].readInt32BE(0);
     var size = data[0].readInt32BE(4);
-    var map = {};
+    var map = new Map();
+    var obj = {};
     for (var i = 0; i < size; ++i) {
         var key = data[2*i + 1];
         var value = data[2*i + 2];
-        if (typeof key !== "string") {
-            return fields;
+        map.set(key, value);
+        if (typeof key === "string") {
+            obj[key] = value;
         }
-        map[key] = value;
     }
     fields.map = map;
+    fields.obj = obj;
     return fields;
 }
 
 function enumMapParser(cls, fields, data) {
     var size = data[0].readInt32BE(0);
-    var map = {};
+    var map = new Map();
+    var obj = {};
     for (var i = 0; i < size; ++i) {
         var key = data[2*i + 1];
         var value = data[2*i + 2];
-        map[key] = value;
+        map.set(key, value);
+        obj[key] = value;
     }
     fields.map = map;
+    fields.obj = obj;
     return fields;
 }
 
