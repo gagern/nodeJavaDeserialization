@@ -178,13 +178,13 @@ class TestCases extends GenerateTestCases {
         args = "one, three";
         checkStrictEqual("typeof one", "'object'");
         checkThat("one instanceof String");
-        checkEqual("one", "'ONE'");
+        checkLooseEqual("one", "'ONE'");
         checkNotStrictEqual("one", "'ONE'");
         checkStrictEqual("one.class.name", "'SomeEnum'");
         checkThat("one.class.isEnum");
         checkStrictEqual("one.class.super.name", "'java.lang.Enum'");
         checkStrictEqual("one.class.super.super", "null");
-        checkEqual("three", "'THREE'");
+        checkLooseEqual("three", "'THREE'");
     }
 
     @SerializationTestCase public void customFormat() throws Exception {

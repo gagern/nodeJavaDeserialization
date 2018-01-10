@@ -9,7 +9,8 @@ class GenerateTestCases {
 
     public static void main(String[] args) throws Exception {
         System.out.print
-            ("const assert = require('assert');\n" +
+            ("const chai = require('chai');\n" +
+             "const expect = chai.expect;\n" +
              "const javaDeserialization = require('../');\n" +
              "\n" +
              "function testCase(b64data, checks) {\n" +
@@ -18,12 +19,13 @@ class GenerateTestCases {
              "    const res = javaDeserialization.parse(bytes);\n" +
              "    const begin = res[0];\n" +
              "    const end = res[res.length - 1];\n" +
-             "    assert.strictEqual(begin[0], 'Begin');\n" +
-             "    assert.strictEqual(begin[1], begin);\n" +
-             "    assert.strictEqual(end[0], end);\n" +
-             "    assert.strictEqual(end[1], 'End');\n" +
-             "    assert.strictEqual(res.length, checks.length + 2,\n" +
-             "      'Number of serialized objects must match args list');\n" +
+             "    expect(begin[0]).to.equal('Begin');\n" +
+             "    expect(begin[1]).to.equal(begin);\n" +
+             "    expect(end[0]).to.equal(end);\n" +
+             "    expect(end[1]).to.equal('End');\n" +
+             "    expect(res.length,\n" +
+             "      'Number of serialized objects must match args list'\n" +
+             "    ).to.equal(checks.length + 2);\n" +
              "    return checks.apply(null, res.slice(1, -1));\n" +
              "  };\n" +
              "}\n" +
@@ -90,31 +92,35 @@ class GenerateTestCases {
         check.print("      " + chk + "\n");
     }
 
-    protected void checkThat(String chk) {
-        checkLine("assert(" + chk + ", \"expected " + chk + "\");");
+    protected void expect(String lhs, String rhs) {
+        String lhss = lhs.replace("\\", "\\\\").replace("\"", "\\\"");
+        checkLine("expect(" + lhs + ", \"" + lhss + "\")." + rhs + ";");
     }
 
-    protected void checkWith(String method, String actual, String expected) {
-        String op = uncamelWords(method).replace("strict ", "strictly ");
-        checkLine("assert." + method + "(" + actual + ", " + expected + ", " +
-                  "\"expected " + actual + " to be " + op + " to " +
-                  expected + "\");");
+    protected void expect(String lhs, String op, String rhs) {
+        expect(lhs, op + "(" + rhs + ")");
+    }
+
+    protected void checkThat(String chk) {
+        expect(chk, "to.be.true");
     }
 
     protected void checkStrictEqual(String actual, String expected) {
-        checkWith("strictEqual", actual, expected);
+        expect(actual, "to.equal", expected);
     }
 
-    protected void checkEqual(String actual, String expected) {
-        checkWith("equal", actual, expected);
+    protected void checkLooseEqual(String actual, String expected) {
+        // https://github.com/chaijs/chai/issues/906
+        checkThat(actual + " == " + expected);
     }
 
     protected void checkNotStrictEqual(String actual, String expected) {
-        checkWith("notStrictEqual", actual, expected);
+        expect(actual, "to.not.equal", expected);
     }
 
-    protected void checkNotEqual(String actual, String expected) {
-        checkWith("notEqual", actual, expected);
+    protected void checkNotLooseEqual(String actual, String expected) {
+        // https://github.com/chaijs/chai/issues/906
+        checkThat(actual + " != " + expected);
     }
 
     private void prepare() throws Exception {
