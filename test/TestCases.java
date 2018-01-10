@@ -208,6 +208,17 @@ class TestCases extends GenerateTestCases {
         checkStrictEqual("three2", "three");
     }
 
+    @SerializationTestCase(description="Exception as regular object")
+    public void exception() throws Exception {
+        Exception exn = new RuntimeException("Kaboom");
+        exn.setStackTrace(new StackTraceElement[] {
+            new StackTraceElement("Cls", "met", "Cls.java", 123)
+        });
+        writeObject(exn);
+        checkStrictEqual("itm.class.name", "'java.lang.RuntimeException'");
+        checkStrictEqual("itm.detailMessage", "'Kaboom'");
+    }
+
     @SerializationTestCase public void customFormat() throws Exception {
         writeObject(new CustomFormat());
         checkArray("itm['@']");
