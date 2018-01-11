@@ -1,3 +1,5 @@
-node_modules/
-test/*.class
-package-lock.json
+/node_modules/
+/test/*.class
+/package-lock.json
+/.nyc_output/
+/coverage/
