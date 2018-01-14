@@ -59,6 +59,21 @@ class CustomFormat implements Serializable {
         throws java.io.ObjectStreamException { }
 }
 
+class External implements Serializable, java.io.Externalizable {
+
+    public void writeExternal(java.io.ObjectOutput out)
+        throws java.io.IOException
+    {
+        // These numbers should result in "test" visible in the base64 output ;)
+        byte[] data = { -75, -21, 45, 0, -75, -21, 45, 0, -75, -21, 45 };
+        out.write(data);
+        out.writeObject("and more");
+    }
+
+    public void readExternal(java.io.ObjectInput in) { }
+
+}
+
 class TestCases extends GenerateTestCases {
 
     @SerializationTestCase public void canariesOnly() throws Exception {
@@ -228,6 +243,17 @@ class TestCases extends GenerateTestCases {
                          "'b5eb2d00b5eb2d00b5eb2d'");
         checkStrictEqual("itm['@'][1]", "'and more'");
         checkStrictEqual("itm.foo", "12345");
+    }
+
+    @SerializationTestCase public void externalizable() throws Exception {
+        writeObject(new External());
+        checkArray("itm['@']");
+        checkLength("itm['@']", 2);
+        checkThat("Buffer.isBuffer(itm['@'][0])");
+        checkStrictEqual("itm['@'][0].toString('hex')",
+                         "'b5eb2d00b5eb2d00b5eb2d'");
+        checkStrictEqual("itm['@'][1]", "'and more'");
+        checkKeys("itm", "'@'");
     }
 
     @SerializationTestCase(description="HashMap<String, …>")

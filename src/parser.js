@@ -254,7 +254,7 @@ Parser.prototype.parseString = function() {
     return this.newHandle(this.utf());
 }
 
-Parser.prototype.parseStringLong = function() {
+Parser.prototype.parseLongString = function() {
     return this.newHandle(this.utfLong());
 }
 

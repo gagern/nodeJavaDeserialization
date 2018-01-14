@@ -178,6 +178,17 @@ describe('Deserialization of', function() {
       expect(itm.foo, "itm.foo").to.equal(12345);
     }));
 
+  it('externalizable', testCase(
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IACEV4dGVybmFsJ+EnQdGOfAQMAAB4cHcLtestALXrLQC16y10AAhhbmQgbW9yZXh1cQB+AAAAAAACcQB+AAZ0AANFbmQ=',
+    function(itm) {
+      expect(itm['@'], "itm['@']").to.be.an('Array');
+      expect(itm['@'], "itm['@']").to.have.lengthOf(2);
+      expect(Buffer.isBuffer(itm['@'][0]), "Buffer.isBuffer(itm['@'][0])").to.be.true;
+      expect(itm['@'][0].toString('hex'), "itm['@'][0].toString('hex')").to.equal('b5eb2d00b5eb2d00b5eb2d');
+      expect(itm['@'][1], "itm['@'][1]").to.equal('and more');
+      expect(itm, "itm").to.have.all.keys(['@']);
+    }));
+
   it('HashMap<String, …>', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhyZXNob2xkeHA/QAAAAAAADHcIAAAAEAAAAAJ0AANiYXJ0AANiYXp0AANmb29zcgARamF2YS5sYW5nLkludGVnZXIS4qCk94GHOAIAAUkABXZhbHVleHIAEGphdmEubGFuZy5OdW1iZXKGrJUdC5TgiwIAAHhwAAAAe3h1cQB+AAAAAAACcQB+AAt0AANFbmQ=',
     function(itm) {
