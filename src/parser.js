@@ -50,7 +50,18 @@ function Parser(buf) {
 Parser.prototype.step = function(len) {
     var pos = this.pos;
     this.pos += len;
+    if (this.pos > this.buf.length) {
+        var err = new Error("Premature end of input");
+        err.buf = this.buf;
+        err.pos = this.pos;
+        throw err;
+    }
     return pos;
+}
+
+Parser.prototype.chunk = function(len, encoding) {
+    var pos = this.step(len);
+    return this.buf.toString(encoding, pos, this.pos);
 }
 
 Parser.prototype.readUInt8 = function() {
@@ -78,25 +89,17 @@ Parser.prototype.readInt32 = function() {
 }
 
 Parser.prototype.readHex = function(len) {
-    var res = this.buf.toString("hex", this.pos, this.pos + len);
-    this.pos += len;
-    return res;
+    return this.chunk(len, "hex");
 }
 
 Parser.prototype.utf = function() {
-    var len = this.readUInt16();
-    var res = this.buf.toString("utf8", this.pos, this.pos + len);
-    this.pos += len;
-    return res;
+    return this.chunk(this.readUInt16(), "utf8");
 }
 
 Parser.prototype.utfLong = function() {
     if (this.readUInt32() !== 0)
         throw new Error("Can't handle more than 2^32 bytes in a string");
-    var len = this.readUInt32();
-    var res = this.buf.toString("utf8", this.pos, this.pos + len);
-    this.pos += len;
-    return res;
+    return this.chunk(this.readUInt32(), "utf8");
 }
 
 Parser.prototype.magic = function() {

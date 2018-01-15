@@ -101,6 +101,21 @@ describe("Failure scenarios", function() {
         )).to.throw(/bytes in a string/);
     });
 
+    it("premature end", function() {
+        const good = parsing(
+            STREAM_MAGIC + STREAM_VERSION +
+            TC_STRING + "0007" + utf8("abcdefg"))();
+        expect(good).to.be.an("array").which.is.deep.equal(["abcdefg"]);
+        expect(parsing(
+            STREAM_MAGIC + STREAM_VERSION +
+            TC_STRING + "0008" + utf8("abcdefg")
+        )).to.throw("Premature end of input").with.all.keys(["buf", "pos"]);
+        expect(parsing(
+            STREAM_MAGIC + STREAM_VERSION +
+            TC_STRING + "00"
+        )).to.throw("Premature end of input").with.all.keys(["buf", "pos"]);
+    });
+
     it("reset not supported", function() {
         expect(parsing(STREAM_MAGIC + STREAM_VERSION + TC_RESET))
             .to.throw("Don't know how to handle Reset");
@@ -145,4 +160,5 @@ describe("Failure scenarios", function() {
         expect(parsing(template1({classDesc: TC_OBJECT})))
             .to.throw("Object not allowed here");
     });
+
 });
