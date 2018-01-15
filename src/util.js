@@ -20,7 +20,6 @@
  * SOFTWARE.
  */
 
-var assert = require("assert");
 var Parser = require("./parser.js");
 
 function listParser(cls, fields, data) {
@@ -66,7 +65,9 @@ function hashSetParser(cls, fields, data) {
     var capacity = data[0].readInt32BE(0);
     var loadFactor = data[0].readFloatBE(4);
     var size = data[0].readInt32BE(8);
-    assert.strictEqual(data.length, size + 1);
+    if (data.length !== size + 1)
+        throw new Error("Expected " + size + " elements " +
+                        "but parsed " + (data.length - 1));
     fields.set = new Set(data.slice(1));
     return fields;
 }

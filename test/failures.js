@@ -161,4 +161,17 @@ describe("Failure scenarios", function() {
             .to.throw("Object not allowed here");
     });
 
+    it("Wrong hash set size", function() {
+        const hex=
+              STREAM_MAGIC + STREAM_VERSION + TC_OBJECT + TC_CLASSDESC +
+              str("java.util.HashSet") + "ba44859596b8b734" +
+              uint8(SC_SERIALIZABLE | SC_WRITE_METHOD) + "0000" +
+              TC_ENDBLOCKDATA + TC_NULL +
+              TC_BLOCKDATA + "0c" + "00000003" + "00000000" + "0000000?" +
+              TC_STRING + str("foo") + TC_ENDBLOCKDATA;
+        const good = parsing(hex.replace("?", "1"));
+        expect(parsing(hex.replace("?", "3")))
+            .to.throw("Expected 3 elements but parsed 1");
+    });
+
 });
