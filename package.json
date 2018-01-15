@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "nyc --reporter=html --reporter=text-summary mocha test/*.js",
-    "gentest": "cd test && javac *.java && java GenerateTestCases > tests.js && npm test"
+    "gentest": "cd test && javac *.java && java GenerateTestCases > generated.js && npm test"
   },
   "repository": {
     "type": "git",
