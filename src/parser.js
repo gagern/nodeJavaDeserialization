@@ -53,12 +53,29 @@ Parser.prototype.step = function(len) {
     return pos;
 }
 
-Parser.prototype.readUInt8 = function() { return this.buf.readUInt8(this.step(1)); }
-Parser.prototype.readInt8 = function() { return this.buf.readInt8(this.step(1)); }
-Parser.prototype.readUInt16 = function() { return this.buf.readUInt16BE(this.step(2)); }
-Parser.prototype.readInt16 = function() { return this.buf.readInt16BE(this.step(2)); }
-Parser.prototype.readUInt32 = function() { return this.buf.readUInt32BE(this.step(4)); }
-Parser.prototype.readInt32 = function() { return this.buf.readInt32BE(this.step(4)); }
+Parser.prototype.readUInt8 = function() {
+    return this.buf.readUInt8(this.step(1));
+}
+
+Parser.prototype.readInt8 = function() {
+    return this.buf.readInt8(this.step(1));
+}
+
+Parser.prototype.readUInt16 = function() {
+    return this.buf.readUInt16BE(this.step(2));
+}
+
+Parser.prototype.readInt16 = function() {
+    return this.buf.readInt16BE(this.step(2));
+}
+
+Parser.prototype.readUInt32 = function() {
+    return this.buf.readUInt32BE(this.step(4));
+}
+
+Parser.prototype.readInt32 = function() {
+    return this.buf.readInt32BE(this.step(4));
+}
 
 Parser.prototype.readHex = function(len) {
     var res = this.buf.toString("hex", this.pos, this.pos + len);
