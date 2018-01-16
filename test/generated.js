@@ -1,10 +1,13 @@
 const chai = require('chai');
 const expect = chai.expect;
+const zlib = require('zlib');
 const javaDeserialization = require('../');
 
 function testCase(b64data, checks) {
   return function() {
-    const bytes = Buffer.from(b64data, 'base64');
+    let bytes = Buffer.from(b64data, 'base64');
+    if (b64data.substring(0, 4) === 'H4sI')
+      bytes = zlib.gunzipSync(bytes);
     const res = javaDeserialization.parse(bytes);
     const begin = res[0];
     const end = res[res.length - 1];
@@ -161,7 +164,7 @@ describe('Deserialization of', function() {
     }));
 
   it('Exception as regular object', testCase(
-    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IAGmphdmEubGFuZy5SdW50aW1lRXhjZXB0aW9unl8GRwo0g+UCAAB4cgATamF2YS5sYW5nLkV4Y2VwdGlvbtD9Hz4aOxzEAgAAeHIAE2phdmEubGFuZy5UaHJvd2FibGXVxjUnOXe4ywMABEwABWNhdXNldAAVTGphdmEvbGFuZy9UaHJvd2FibGU7TAANZGV0YWlsTWVzc2FnZXQAEkxqYXZhL2xhbmcvU3RyaW5nO1sACnN0YWNrVHJhY2V0AB5bTGphdmEvbGFuZy9TdGFja1RyYWNlRWxlbWVudDtMABRzdXBwcmVzc2VkRXhjZXB0aW9uc3QAEExqYXZhL3V0aWwvTGlzdDt4cHEAfgAKdAAGS2Fib29tdXIAHltMamF2YS5sYW5nLlN0YWNrVHJhY2VFbGVtZW50OwJGKjw8/SI5AgAAeHAAAAABc3IAG2phdmEubGFuZy5TdGFja1RyYWNlRWxlbWVudGEJxZomNt2FAgAESQAKbGluZU51bWJlckwADmRlY2xhcmluZ0NsYXNzcQB+AAdMAAhmaWxlTmFtZXEAfgAHTAAKbWV0aG9kTmFtZXEAfgAHeHAAAAB7dAADQ2xzdAAIQ2xzLmphdmF0AANtZXRzcgAmamF2YS51dGlsLkNvbGxlY3Rpb25zJFVubW9kaWZpYWJsZUxpc3T8DyUxteyOEAIAAUwABGxpc3RxAH4ACXhyACxqYXZhLnV0aWwuQ29sbGVjdGlvbnMkVW5tb2RpZmlhYmxlQ29sbGVjdGlvbhlCAIDLXvceAgABTAABY3QAFkxqYXZhL3V0aWwvQ29sbGVjdGlvbjt4cHNyABNqYXZhLnV0aWwuQXJyYXlMaXN0eIHSHZnHYZ0DAAFJAARzaXpleHAAAAAAdwQAAAAAeHEAfgAYeHVxAH4AAAAAAAJxAH4AGXQAA0VuZA==',
+    'H4sIAAAAAAAAAIVSXWvUQBS9m83WNqAufmGrriBaUWQXQYWSIthllWKsoBWEBWU2ud1OnUzizMSNCqKIr+KrgvoHfBX8AX48FEQEH330TZ99seDc1P2Qgs7DTHJz7plzTu6rH1DJFGxvByvsFqsLJrv1i50VDI3/5OPVl1V9RDgAeQoAjoHKHHa5vAn3oKQVTA1bLmXS8BhbeYip4Yl8cX3snHfi4TfqtexD4ADxaW3/6Sl/79sNiMVllfRYR+CX9ycPz/TerJbBDaASskyjgZ2FzgYhGwOkH8DmCA3j4gJqzboWt20Ed9koLrt+GzxtWHhjUbHQImrtvyD9Dy2BMUpjKXfoLE2VJcRooFobqK63ZYaLRsC18fOUAvEMjJ1nnSSJbZy10Tg3cjtnj87Orh2Y6SdLYe75RwObePds+tTXRw648+AJLnEhizuoAtgSYSgY2WsKpjUJ2RTA+BIXuMBi/PPuxWiWk2hQKS69a6DcFNbQuN3rdLstWKDVMl1oIYf1ZiKEHQayfvCKjJOIL3GKnJz/2nro+Ovvj6sOlAJwha0Q+4T9ncf+TzCsT87B/dVrP2sFTSk0sGsk4SHM5qz7g1Iwn1GK3SYd+YPP+55+YM/LUJoHV/M7WBiEnkt7TqJ25xkdtBx6mLReWzL6DS3112r+AgAA',
     function(itm) {
       expect(itm.class.name, "itm.class.name").to.equal('java.lang.RuntimeException');
       expect(itm.detailMessage, "itm.detailMessage").to.equal('Kaboom');

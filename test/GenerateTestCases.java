@@ -4,6 +4,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.Base64;
+import java.util.zip.GZIPOutputStream;
 
 class GenerateTestCases {
 
@@ -11,11 +12,14 @@ class GenerateTestCases {
         System.out.print
             ("const chai = require('chai');\n" +
              "const expect = chai.expect;\n" +
+             "const zlib = require('zlib');\n" +
              "const javaDeserialization = require('../');\n" +
              "\n" +
              "function testCase(b64data, checks) {\n" +
              "  return function() {\n" +
-             "    const bytes = Buffer.from(b64data, 'base64');\n" +
+             "    let bytes = Buffer.from(b64data, 'base64');\n" +
+             "    if (b64data.substring(0, 4) === 'H4sI')\n" +
+             "      bytes = zlib.gunzipSync(bytes);\n" +
              "    const res = javaDeserialization.parse(bytes);\n" +
              "    const begin = res[0];\n" +
              "    const end = res[res.length - 1];\n" +
@@ -160,7 +164,16 @@ class GenerateTestCases {
         out.print("  it('");
         out.print(description);
         out.print("', testCase(\n    '");
-        String b64 = Base64.getEncoder().encodeToString(dataBuf.toByteArray());
+        byte[] bytes1 = dataBuf.toByteArray();
+        dataBuf.reset();
+        GZIPOutputStream zip = new GZIPOutputStream(dataBuf);
+        zip.write(bytes1);
+        zip.close();
+        byte[] bytes2 = dataBuf.toByteArray();
+        byte[] bytes = bytes1;
+        if (bytes2.length * 3 < bytes1.length * 2)
+            bytes = bytes2;
+        String b64 = Base64.getEncoder().encodeToString(bytes);
         int chunklen = 1024;
         int i;
         for (i = 0; i + chunklen < b64.length(); i += chunklen) {
