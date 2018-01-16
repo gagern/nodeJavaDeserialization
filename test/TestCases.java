@@ -61,16 +61,26 @@ class CustomFormat implements Serializable {
 
 class External implements Serializable, java.io.Externalizable {
 
+    // These numbers should result in "test" visible in the base64 output ;)
+    byte[] data = { -75, -21, 45, 0, -75, -21, 45, 0, -75, -21, 45 };
+
+    String str = "and more";
+
     public void writeExternal(java.io.ObjectOutput out)
         throws java.io.IOException
     {
-        // These numbers should result in "test" visible in the base64 output ;)
-        byte[] data = { -75, -21, 45, 0, -75, -21, 45, 0, -75, -21, 45 };
+        out.writeInt(data.length);
         out.write(data);
-        out.writeObject("and more");
+        out.writeObject(str);
     }
 
-    public void readExternal(java.io.ObjectInput in) { }
+    public void readExternal(java.io.ObjectInput in)
+        throws java.io.IOException, ClassNotFoundException
+    {
+        data = new byte[in.readInt()];
+        in.readFully(data);
+        str = in.readObject().toString();
+    }
 
 }
 
@@ -84,6 +94,17 @@ class TestCases extends GenerateTestCases {
         writeObject("sometext");
         checkStrictEqual("typeof itm", "'string'");
         checkStrictEqual("itm", "'sometext'");
+    }
+
+    @SerializationTestCase public void longString() throws Exception {
+        char[] chars = new char[1 << 17];
+        for (int i = 0; i < chars.length; ++i)
+            chars[i] = 'x';
+        writeObject(new String(chars));
+        checkStrictEqual("typeof itm", "'string'");
+        checkLength("itm", 1 << 17);
+        checkStrictEqual("itm[0]", "'x'");
+        checkStrictEqual("itm[(1 << 17) - 1]", "'x'");
     }
 
     @SerializationTestCase(description="null")
@@ -251,7 +272,23 @@ class TestCases extends GenerateTestCases {
         checkLength("itm['@']", 2);
         checkThat("Buffer.isBuffer(itm['@'][0])");
         checkStrictEqual("itm['@'][0].toString('hex')",
-                         "'b5eb2d00b5eb2d00b5eb2d'");
+                         "'0000000bb5eb2d00b5eb2d00b5eb2d'");
+        checkStrictEqual("itm['@'][1]", "'and more'");
+        checkKeys("itm", "'@'");
+    }
+
+    @SerializationTestCase public void longExternalizable() throws Exception {
+        External ext = new External();
+        ext.data = new byte[1 << 9];
+        for (int i = 0; i < ext.data.length; ++i)
+            ext.data[i] = (byte)(i & 0xff);
+        writeObject(ext);
+        checkArray("itm['@']");
+        checkLength("itm['@']", 2);
+        checkThat("Buffer.isBuffer(itm['@'][0])");
+        checkLength("itm['@'][0]", (1 << 9) + 4);
+        checkStrictEqual("itm['@'][0].toString('hex', 0, 4)", "'00000200'");
+        checkStrictEqual("itm['@'][0].toString('hex', 4, 8)", "'00010203'");
         checkStrictEqual("itm['@'][1]", "'and more'");
         checkKeys("itm", "'@'");
     }

@@ -36,6 +36,15 @@ describe('Deserialization of', function() {
       expect(itm, "itm").to.equal('sometext');
     }));
 
+  it('long string', testCase(
+    'H4sIAAAAAAAAAO3JuwnCABRA0Wc0veAUNlnATrATbAWr+CEYQvCTiIVkBjdwAWdxE3eQgGOcU12472+k7SUmm2WZ3/KsyusiW23Lw66ZPT/r1/g6rZKI+ykikibS+aE41ufoYvCIXv8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/tpzdNFL+hg1MVzU+x8AC//OVwACAA==',
+    function(itm) {
+      expect(typeof itm, "typeof itm").to.equal('string');
+      expect(itm, "itm").to.have.lengthOf(131072);
+      expect(itm[0], "itm[0]").to.equal('x');
+      expect(itm[(1 << 17) - 1], "itm[(1 << 17) - 1]").to.equal('x');
+    }));
+
   it('null', testCase(
     'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABcHVxAH4AAAAAAAJxAH4AA3QAA0VuZA==',
     function(itm) {
@@ -182,12 +191,25 @@ describe('Deserialization of', function() {
     }));
 
   it('externalizable', testCase(
-    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IACEV4dGVybmFsJ+EnQdGOfAQMAAB4cHcLtestALXrLQC16y10AAhhbmQgbW9yZXh1cQB+AAAAAAACcQB+AAZ0AANFbmQ=',
+    'rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ0AAVCZWdpbnEAfgABc3IACEV4dGVybmFs8N9gtNEyHREMAAB4cHcPAAAAC7XrLQC16y0AtestdAAIYW5kIG1vcmV4dXEAfgAAAAAAAnEAfgAGdAADRW5k',
     function(itm) {
       expect(itm['@'], "itm['@']").to.be.an('Array');
       expect(itm['@'], "itm['@']").to.have.lengthOf(2);
       expect(Buffer.isBuffer(itm['@'][0]), "Buffer.isBuffer(itm['@'][0])").to.be.true;
-      expect(itm['@'][0].toString('hex'), "itm['@'][0].toString('hex')").to.equal('b5eb2d00b5eb2d00b5eb2d');
+      expect(itm['@'][0].toString('hex'), "itm['@'][0].toString('hex')").to.equal('0000000bb5eb2d00b5eb2d00b5eb2d');
+      expect(itm['@'][1], "itm['@'][1]").to.equal('and more');
+      expect(itm, "itm").to.have.all.keys(['@']);
+    }));
+
+  it('long externalizable', testCase(
+    'H4sIAAAAAAAAAFvzloG1tIhBONonK7EsUS8nMS9dzz8pKzW5xHrCuYj5AsWaOUwMDBUFDAwMTCUMrE6p6Zl5hQx1DIzFRQwcrhUlqUV5iTkf7idsuWgkK8gDUlkFVMkCxAwMjEzMLKxs7BycXNw8vHz8AoJCwiKiYuISklLSMrJy8gqKSsoqqmrqGppa2jq6evoGhkbGJqZm5haWVtY2tnb2Do5Ozi6ubu4enl7ePr5+/gGBQcEhoWHhEZFR0TGxcfEJiUnJKalp6RmZWdk5uXn5BYVFxSWlZeUVlVXVNbV19Q2NTc0trW3tHZ1d3T29ff0TJk6aPGXqtOkzZs6aPWfuvPkLFi5avGTpsuUrVq5avWbtuvUbNm7avGXrtu07du7avWfvvv0HDh46fOToseMnTp46febsufMXLl66fOXqtes3bt66fefuvfsPHj56/OTps+cvXr56/ebtu/cfPn76/OXrt+8/fv76/efvv/8j3f8lDByJeSkKuflFqRWloDQDAkwgBlsJA7NrXgoAi1fv5nwCAAA=',
+    function(itm) {
+      expect(itm['@'], "itm['@']").to.be.an('Array');
+      expect(itm['@'], "itm['@']").to.have.lengthOf(2);
+      expect(Buffer.isBuffer(itm['@'][0]), "Buffer.isBuffer(itm['@'][0])").to.be.true;
+      expect(itm['@'][0], "itm['@'][0]").to.have.lengthOf(516);
+      expect(itm['@'][0].toString('hex', 0, 4), "itm['@'][0].toString('hex', 0, 4)").to.equal('00000200');
+      expect(itm['@'][0].toString('hex', 4, 8), "itm['@'][0].toString('hex', 4, 8)").to.equal('00010203');
       expect(itm['@'][1], "itm['@'][1]").to.equal('and more');
       expect(itm, "itm").to.have.all.keys(['@']);
     }));
