@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+"use strict";
+
 var Parser = require("./parser.js");
 require("./util.js");
 

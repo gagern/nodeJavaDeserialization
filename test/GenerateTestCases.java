@@ -10,7 +10,9 @@ class GenerateTestCases {
 
     public static void main(String[] args) throws Exception {
         System.out.print
-            ("const chai = require('chai');\n" +
+            ("'use strict';\n" +
+             "\n" +
+             "const chai = require('chai');\n" +
              "const expect = chai.expect;\n" +
              "const zlib = require('zlib');\n" +
              "const javaDeserialization = require('../');\n" +

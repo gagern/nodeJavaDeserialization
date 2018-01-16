@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+"use strict";
+
 var Parser = require("./parser.js");
 
 function listParser(cls, fields, data) {
