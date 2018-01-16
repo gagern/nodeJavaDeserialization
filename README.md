@@ -1,5 +1,9 @@
 # Java Deserialization for Node
 
+[![npm version](https://img.shields.io/npm/v/java-deserialization.svg)](https://www.npmjs.com/package/java-deserialization)
+[![build status](https://travis-ci.org/gagern/nodeJavaDeserialization.svg?branch=master)](https://travis-ci.org/gagern/nodeJavaDeserialization)
+[![coverage status](https://coveralls.io/repos/github/gagern/nodeJavaDeserialization/badge.svg?branch=master)](https://coveralls.io/github/gagern/nodeJavaDeserialization?branch=master)
+
 This package started out with the hope of satisfying
 some specific need for a given project.
 The first version was committed once that need was satisfied.
